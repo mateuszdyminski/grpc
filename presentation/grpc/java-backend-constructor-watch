@@ -1,0 +1,24 @@
+public class Backend {
+    private int port = 36061;
+    private Server server;
+
+    private void start(int id) throws IOException {
+        server = ServerBuilder.forPort((port + id)) // HL
+                .addService(new GoogleImpl(id)) // HL
+                .build()
+                .start();
+        logger.info("Server started, listening on " + (port + id));
+    }
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        String id = "0";
+
+        if (args.length > 0) {
+            id = args[0];
+        }
+
+        final Backend server = new Backend(); // HL
+        server.start(Integer.parseInt(id)); // HL
+        server.blockUntilShutdown();
+    }
+}

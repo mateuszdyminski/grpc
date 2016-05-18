@@ -1,0 +1,14 @@
+/**
+ * Search query in dummy google backend.
+ */
+public Result search(String query) {
+    logger.info("Starting search for " + query + " ...");
+
+    final Request request = Request.newBuilder().setQuery(query).build(); // HL
+
+    return Try
+            .ofFailable(() -> googleBlockingStub.search(request)) // HL
+            .onSuccess(r -> logger.info("Search result: " + r))
+            .onFailure(e -> logger.log(Level.SEVERE, "RPC failed: {0}", e))
+            .getUnchecked();
+}

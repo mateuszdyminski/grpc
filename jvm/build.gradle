@@ -1,0 +1,70 @@
+apply plugin: 'application'
+apply plugin: 'com.google.protobuf'
+apply plugin: 'idea'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.7'
+    }
+}
+
+description = "Dummy google server over gRPC"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'io.grpc:grpc-all:0.14.0'
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.0.0-beta-2"
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:0.14.0'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+
+    generatedFilesBaseDir = "$projectDir/src/generated"
+}
+
+sourceSets {
+    main {
+        proto {
+            // In addition to the default 'src/main/proto'
+            srcDir '../proto'
+        }
+    }
+}
+
+startScripts.enabled = false
+
+task searchClient(type: CreateStartScripts) {
+    mainClassName = "com.grpc.search.SearchClient"
+    applicationName = "google-client"
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = jar.outputs.files + project.configurations.runtime
+}
+
+applicationDistribution.into("bin") {
+    from(searchClient)
+    fileMode = 0755
+}
+
+idea {
+    module {
+        sourceDirs += file("${projectDir}/src/generated/main/grpc");
+        sourceDirs += file("${projectDir}/src/generated/main/java");
+    }
+}

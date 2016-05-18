@@ -1,0 +1,24 @@
+private class GoogleImpl extends GoogleGrpc.AbstractGoogle { // HL
+    private final int id;
+
+    public GoogleImpl(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public void search(Request req, StreamObserver<Result> responseObserver) { // HL
+        sleepRandTime();
+        Result reply = Result // HL
+          .newBuilder()
+          .setTitle(format("result for [%s] from backend %d", req.getQuery(), id))
+          .build();
+        responseObserver.onNext(reply); // HL
+        responseObserver.onCompleted(); // HL
+    }
+
+    private void sleepRandTime() {
+        Try.ofFailable(() -> {
+            Thread.sleep((new Random().nextInt(9) + 1) * 10;
+        }).getUnchecked();
+    }
+}

@@ -1,0 +1,14 @@
+    /**
+     * Search query in async way in dummy google backend.
+     */
+    public Result search(String query) {
+        logger.info("Starting search for " + query + " ...");
+
+        Request request = Request.newBuilder().setQuery(query).build();
+        ListenableFuture<Result> resultFuture = googleFutureClient.search(request); // HL
+
+        return Try.ofFailable(() -> resultFuture.get(1000, TimeUnit.MILLISECONDS)) // HL
+                .onSuccess(r -> logger.info("Search result: " + r))
+                .onFailure(e -> logger.log(Level.SEVERE, "RPC failed: {0}", e))
+                .getUnchecked();
+    }

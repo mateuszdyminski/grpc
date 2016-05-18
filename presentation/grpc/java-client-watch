@@ -1,0 +1,24 @@
+public void watch(String query) {
+    final Request request = Request.newBuilder().setQuery(query).build(); // HL
+    final CountDownLatch latch = new CountDownLatch(1); // we expect only 1 result
+
+    StreamObserver<Result> stream = new StreamObserver<Result>() { // HL
+        @Override
+        public void onNext(Result value) { // HL
+            logger.info("Search result: " + value.getTitle());
+        }
+        @Override
+        public void onError(Throwable t) { // HL
+            logger.severe(("Error while watching for results! " + t.getMessage()));
+            latch.countDown();
+        }
+        @Override
+        public void onCompleted() { // HL
+            logger.info("Watch done!");
+            latch.countDown();
+        }
+    };
+
+    googleStub.watch(request, stream); // HL
+    Uninterruptibles.awaitUninterruptibly(latch, 100, TimeUnit.SECONDS); // HL
+}

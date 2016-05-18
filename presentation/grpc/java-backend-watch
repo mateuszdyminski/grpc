@@ -1,0 +1,24 @@
+class GoogleImpl extends GoogleGrpc.AbstractGoogle {
+    private final int id;
+
+    public GoogleImpl(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public void watch(Request req, StreamObserver<Result> responseObserver) { // HL
+        int responseNo = 0;
+        final ServerCallStreamObserver serverCall = (ServerCallStreamObserver) responseObserver;
+        serverCall.setOnCancelHandler(() -> logger.warning("Request canceled!")); // HL
+
+        while (!serverCall.isCancelled()) { // HL
+            sleepUpToMiilis(1000);
+            responseObserver.onNext(Result.newBuilder().setTitle( // HL
+              format("result %d for [%s] from backend %d", responseNo++, req.getQuery(), id)).build());
+        }
+    }
+
+    private void sleepUpToMiilis(int millis) {
+        Try.ofFailable(() -> { Thread.sleep((generator.nextInt(millis / 10) + 1) * 10); }).get();
+    }
+}

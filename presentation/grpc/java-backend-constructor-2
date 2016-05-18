@@ -1,0 +1,23 @@
+  private int port = 36061;
+  private Server server;
+
+  private void start(int id) throws IOException {
+      server = ServerBuilder.forPort(port) // HL
+              .addService(new GoogleImpl(id)) // HL
+              .build().start(); // HL
+      logger.info("Server started, listening on " + port);
+      Runtime.getRuntime().addShutdownHook(new Thread() {
+          @Override
+          public void run() {
+              Backend.this.stop();
+          }
+      });
+  }
+
+  private void stop() { // HL
+      if (server != null) { server.shutdown(); }
+  }
+
+  private void blockUntilShutdown() throws InterruptedException { // HL
+      if (server != null) { server.awaitTermination(); }
+  }

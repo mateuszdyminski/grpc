@@ -1,0 +1,12 @@
+   private final ManagedChannel channel;
+   private final GoogleGrpc.GoogleBlockingStub googleBlockingStub;
+
+   /**
+    * Construct client with blocking API to Frontend server at {@code host:port}.
+    */
+   public Client(String host, int port) {
+       channel = ManagedChannelBuilder.forAddress(host, port) // HL
+               .usePlaintext(true) // HL
+               .build(); // HL
+       googleBlockingStub = GoogleGrpc.newBlockingStub(channel); // HL
+   }

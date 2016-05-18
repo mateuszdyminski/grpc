@@ -1,0 +1,21 @@
+public class Backend {
+
+    .
+    .
+    .
+
+    /**
+     * Main launches the server from the command line.
+     */
+    public static void main(String[] args) throws IOException, InterruptedException {
+        String id = "0";
+
+        if (args.length > 0) {
+            id = args[0];
+        }
+
+        final Backend server = new Backend(); // HL
+        server.start(Integer.parseInt(id)); // HL
+        server.blockUntilShutdown(); // HL
+    }
+}

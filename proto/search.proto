@@ -1,0 +1,24 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "com.grpc.search";
+option java_outer_classname = "SearchProto";
+option objc_class_prefix = "GGL";
+package search;
+
+service Google {
+	// Search returns a Google search result for the query.
+	rpc Search(Request) returns (Result) {}
+
+	// Watch returns a stream of Google search results for the query.
+	rpc Watch(Request) returns (stream Result) {}
+}
+
+message Request {
+	string query = 1;
+}
+
+message Result {
+	string title = 1;
+	string url = 2;
+	string snippet = 3;
+}

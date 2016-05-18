@@ -22,3 +22,20 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+# Intellij
+*.iml
+.idea/
+
+# Gradle
+build/
+target/
+.gradle/
+gradle
+gradlew
+gradlew.bat
+settings.gradle
+
+# Java 
+*.jar
+
