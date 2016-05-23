@@ -3,20 +3,29 @@ package com.grpc.search.backend;
 import com.grpc.search.GoogleGrpc;
 import com.grpc.search.Request;
 import com.grpc.search.Result;
+import com.grpc.util.Time;
 import com.grpc.util.Try;
+import com.squareup.okhttp.Response;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
+import io.netty.util.concurrent.Future;
 
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.grpc.util.Time.sleepUpToMiilis;
 import static java.lang.String.format;
 
 /**
- * User mdyminski
+ * Backend server which implements Search, Watch and BiWatch methods.
  */
 public class Backend {
     private static final Logger logger = Logger.getLogger(Backend.class.getName());
@@ -72,10 +81,12 @@ public class Backend {
         server.blockUntilShutdown();
     }
 
+    /**
+     * GoogleImpl implements abstract auto-generated class AbstractGoogle. You can find gRPC server logic here.
+     */
     private class GoogleImpl extends GoogleGrpc.AbstractGoogle {
 
         private final int id;
-        private final Random generator = new Random();
         private final Logger logger = Logger.getLogger(GoogleImpl.class.getName());
 
         public GoogleImpl(int id) {
@@ -106,11 +117,41 @@ public class Backend {
             responseObserver2.setOnCancelHandler(() -> logger.warning("Request canceled!"));
         }
 
-        private void sleepUpToMiilis(int millis) {
-            Try.ofFailable(() -> {
-                Thread.sleep((generator.nextInt(millis / 10) + 1) * 10);
-                return 0;
-            }).getUnchecked();
+        @Override
+        public StreamObserver<Request> biWatch(StreamObserver<Result> responseObserver) {
+            final LinkedBlockingDeque<Request> q = new LinkedBlockingDeque();
+            ExecutorService executor = Executors.newFixedThreadPool(1);
+            executor.submit(() -> {
+                String lastSearch = "";
+                while(true) {
+                    Request req = q.poll();
+                    if (req == null) {
+                        continue;
+                    } else {
+                        lastSearch = req.getQuery();
+                    }
+
+                    responseObserver.onNext(Result.newBuilder().setTitle(format("result for [%s] from backend %d",  lastSearch, id)).build());
+                    sleepUpToMiilis(1000);
+                }
+            });
+
+            return new StreamObserver<Request>() {
+                @Override
+                public void onNext(Request r) {
+                    q.add(r);
+                }
+
+                @Override
+                public void onError(Throwable t) {
+                    logger.log(Level.WARNING, "biWatch cancelled");
+                }
+
+                @Override
+                public void onCompleted() {
+                    responseObserver.onCompleted();
+                }
+            };
         }
     }
 }

@@ -11,7 +11,7 @@ buildscript {
     }
 }
 
-description = "Dummy google server over gRPC"
+description = "Dummy google client and server over gRPC"
 
 repositories {
     mavenCentral()
@@ -51,7 +51,7 @@ sourceSets {
 startScripts.enabled = false
 
 task searchClient(type: CreateStartScripts) {
-    mainClassName = "com.grpc.search.SearchClient"
+    mainClassName = "com.grpc.search.client.Starter"
     applicationName = "google-client"
     outputDir = new File(project.buildDir, 'tmp')
     classpath = jar.outputs.files + project.configurations.runtime

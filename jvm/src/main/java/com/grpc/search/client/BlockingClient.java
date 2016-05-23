@@ -4,14 +4,15 @@ import com.grpc.search.GoogleGrpc;
 import com.grpc.search.Request;
 import com.grpc.search.Result;
 import com.grpc.util.Try;
-import io.grpc.*;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * User mdyminski
+ * BlockingClient is a client which blocks the execution until gets its response.
  */
 public class BlockingClient implements SearchClient {
 
@@ -20,9 +21,6 @@ public class BlockingClient implements SearchClient {
     private final ManagedChannel channel;
     private final GoogleGrpc.GoogleBlockingClient googleBlockingStub;
 
-    /**
-     * Construct client with blocking API to Load balancer server at {@code host:port}.
-     */
     public BlockingClient(String host, int port) {
         channel = ManagedChannelBuilder.forAddress(host, port)
                 .usePlaintext(true)
@@ -30,6 +28,7 @@ public class BlockingClient implements SearchClient {
         googleBlockingStub = GoogleGrpc.newBlockingStub(channel);
     }
 
+    @Override
     public void shutdown() throws InterruptedException {
         channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
     }
@@ -37,6 +36,7 @@ public class BlockingClient implements SearchClient {
     /**
      * Search query in dummy google backend.
      */
+    @Override
     public Result search(String query) {
         logger.info("Starting search for " + query + " ...");
 
@@ -51,6 +51,11 @@ public class BlockingClient implements SearchClient {
 
     @Override
     public void watch(String query) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void biWatch(String query) {
         throw new UnsupportedOperationException();
     }
 }

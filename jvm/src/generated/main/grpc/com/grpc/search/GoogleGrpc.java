@@ -45,6 +45,15 @@ public class GoogleGrpc {
               "search.Google", "Watch"),
           io.grpc.protobuf.ProtoUtils.marshaller(com.grpc.search.Request.getDefaultInstance()),
           io.grpc.protobuf.ProtoUtils.marshaller(com.grpc.search.Result.getDefaultInstance()));
+  @io.grpc.ExperimentalApi
+  public static final io.grpc.MethodDescriptor<com.grpc.search.Request,
+      com.grpc.search.Result> METHOD_BI_WATCH =
+      io.grpc.MethodDescriptor.create(
+          io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING,
+          generateFullMethodName(
+              "search.Google", "BiWatch"),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.grpc.search.Request.getDefaultInstance()),
+          io.grpc.protobuf.ProtoUtils.marshaller(com.grpc.search.Result.getDefaultInstance()));
 
   /**
    * Creates a new async stub that supports all call types for the service
@@ -88,6 +97,14 @@ public class GoogleGrpc {
      */
     public void watch(com.grpc.search.Request request,
         io.grpc.stub.StreamObserver<com.grpc.search.Result> responseObserver);
+
+    /**
+     * <pre>
+     * Watch returns a stream of Google search results for the stream of query.
+     * </pre>
+     */
+    public io.grpc.stub.StreamObserver<com.grpc.search.Request> biWatch(
+        io.grpc.stub.StreamObserver<com.grpc.search.Result> responseObserver);
   }
 
   @io.grpc.ExperimentalApi
@@ -103,6 +120,12 @@ public class GoogleGrpc {
     public void watch(com.grpc.search.Request request,
         io.grpc.stub.StreamObserver<com.grpc.search.Result> responseObserver) {
       asyncUnimplementedUnaryCall(METHOD_WATCH, responseObserver);
+    }
+
+    @java.lang.Override
+    public io.grpc.stub.StreamObserver<com.grpc.search.Request> biWatch(
+        io.grpc.stub.StreamObserver<com.grpc.search.Result> responseObserver) {
+      return asyncUnimplementedStreamingCall(METHOD_BI_WATCH, responseObserver);
     }
 
     @java.lang.Override public io.grpc.ServerServiceDefinition bindService() {
@@ -173,6 +196,13 @@ public class GoogleGrpc {
       asyncServerStreamingCall(
           getChannel().newCall(METHOD_WATCH, getCallOptions()), request, responseObserver);
     }
+
+    @java.lang.Override
+    public io.grpc.stub.StreamObserver<com.grpc.search.Request> biWatch(
+        io.grpc.stub.StreamObserver<com.grpc.search.Result> responseObserver) {
+      return asyncBidiStreamingCall(
+          getChannel().newCall(METHOD_BI_WATCH, getCallOptions()), responseObserver);
+    }
   }
 
   public static class GoogleBlockingStub extends io.grpc.stub.AbstractStub<GoogleBlockingStub>
@@ -233,6 +263,7 @@ public class GoogleGrpc {
 
   private static final int METHODID_SEARCH = 0;
   private static final int METHODID_WATCH = 1;
+  private static final int METHODID_BI_WATCH = 2;
 
   private static class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -269,6 +300,9 @@ public class GoogleGrpc {
     public io.grpc.stub.StreamObserver<Req> invoke(
         io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
+        case METHODID_BI_WATCH:
+          return (io.grpc.stub.StreamObserver<Req>) serviceImpl.biWatch(
+              (io.grpc.stub.StreamObserver<com.grpc.search.Result>) responseObserver);
         default:
           throw new AssertionError();
       }
@@ -292,6 +326,13 @@ public class GoogleGrpc {
               com.grpc.search.Request,
               com.grpc.search.Result>(
                 serviceImpl, METHODID_WATCH)))
+        .addMethod(
+          METHOD_BI_WATCH,
+          asyncBidiStreamingCall(
+            new MethodHandlers<
+              com.grpc.search.Request,
+              com.grpc.search.Result>(
+                serviceImpl, METHODID_BI_WATCH)))
         .build();
   }
 }

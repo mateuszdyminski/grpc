@@ -11,6 +11,9 @@ service Google {
 
 	// Watch returns a stream of Google search results for the query.
 	rpc Watch(Request) returns (stream Result) {}
+
+	// Watch returns a stream of Google search results for the stream of query.
+	rpc BiWatch(stream Request) returns (stream Result) {}
 }
 
 message Request {

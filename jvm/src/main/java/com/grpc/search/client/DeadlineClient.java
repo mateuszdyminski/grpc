@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * User mdyminski
+ * DeadlineClient is a blocking client showing how to deal with deadline in distributed services.
  */
 public class DeadlineClient implements SearchClient {
 
@@ -25,14 +25,11 @@ public class DeadlineClient implements SearchClient {
     private final ManagedChannel channel;
     private final GoogleGrpc.GoogleBlockingStub googleBlockingStub;
 
-    /**
-     * Construct client with blocking API to Load balancer server at {@code host:port}.
-     */
     public DeadlineClient(String host, int port) {
         channel = ManagedChannelBuilder.forAddress(host, port)
                 .usePlaintext(true)
                 .build();
-        googleBlockingStub = GoogleGrpc.newBlockingStub(channel).withDeadlineAfter(500, TimeUnit.MILLISECONDS);
+        googleBlockingStub = GoogleGrpc.newBlockingStub(channel).withDeadlineAfter(700, TimeUnit.MILLISECONDS);
     }
 
     public void shutdown() throws InterruptedException {
@@ -40,9 +37,9 @@ public class DeadlineClient implements SearchClient {
     }
 
     /**
-     * Search query in dummy google backend.
+     * Search query with deadline (provided at stub construction) in dummy google backend.
      */
-    public Result search1(String query) {
+    public Result searchSimple(String query) {
         logger.info("Starting search for " + query + "...");
 
         final Request request = Request.newBuilder().setQuery(query).build();
@@ -54,7 +51,10 @@ public class DeadlineClient implements SearchClient {
                 .getUnchecked();
     }
 
-
+    /**
+     * Search query with deadline (set manually during request creation) in dummy google backend.
+     */
+    @Override
     public Result search(String query) {
         final ClientCall<Request, Result> call =
                 channel.newCall(GoogleGrpc.METHOD_SEARCH, CallOptions.DEFAULT.withDeadlineAfter(800, TimeUnit.MILLISECONDS));
@@ -101,6 +101,11 @@ public class DeadlineClient implements SearchClient {
 
     @Override
     public void watch(String query) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void biWatch(String query) {
         throw new UnsupportedOperationException();
     }
 }

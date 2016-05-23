@@ -9,11 +9,12 @@ import (
 	_ "net/http/pprof"
 	"time"
 
+	pb "github.com/mateuszdyminski/grpc/golang/search"
 	"golang.org/x/net/context"
 	"golang.org/x/net/trace"
-	pb "github.com/mateuszdyminski/grpc/golang/search"
 	"google.golang.org/grpc"
-  "net/http"
+	"io"
+	"net/http"
 )
 
 var (
@@ -66,6 +67,61 @@ func (s *server) Watch(req *pb.Request, stream pb.Google_WatchServer) error { //
 		case <-ctx.Done():
 			return ctx.Err()
 		}
+	}
+}
+
+// BiWatch returns a stream of results identifying the query and this
+// backend, sleeping a random interval between each send.
+func (s *server) BiWatch(stream pb.Google_BiWatchServer) error { // HL
+	searchWords := make(chan string)
+	errs := make(chan error)
+	done := make(chan bool)
+	searchDone := make(chan bool)
+	ctx := stream.Context()
+	go func(words chan string, done chan bool, errs chan error) {
+		for {
+			in, err := stream.Recv()
+			if err == io.EOF {
+				done <- true
+				return
+			}
+			if err != nil {
+				errs <- err
+				return
+			}
+
+			searchWords <- in.Query
+		}
+	}(searchWords, done, errs)
+
+	go func(words chan string, done chan bool, errs chan error) {
+		query := <-searchWords
+		for {
+			d := randomDuration(1 * time.Second)
+			logSleep(ctx, d)
+			select {
+			case <-time.After(d):
+				err := stream.Send(&pb.Result{
+					Title: fmt.Sprintf("result for [%s] from backend %d", query, *index),
+				})
+				if err != nil {
+					errs <- err
+					return
+				}
+			case query = <-searchWords:
+			case <-done:
+				return
+			}
+		}
+	}(searchWords, searchDone, errs)
+
+	select {
+	case <-done:
+		searchDone <- true
+		return nil
+	case err := <-errs:
+		searchDone <- true
+		return err
 	}
 }
 

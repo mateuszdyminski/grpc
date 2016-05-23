@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * User mdyminski
+ * AsyncClient is a async client based on ListenableFuture.
  */
 public class AsyncClient implements SearchClient {
 
@@ -21,9 +21,6 @@ public class AsyncClient implements SearchClient {
     private final ManagedChannel channel;
     private final GoogleGrpc.GoogleFutureClient googleFutureClient;
 
-    /**
-     * Construct client with async API to Load balancer server at {@code host:port}.
-     */
     public AsyncClient(String host, int port) {
         channel = ManagedChannelBuilder.forAddress(host, port)
                 .usePlaintext(true)
@@ -31,13 +28,15 @@ public class AsyncClient implements SearchClient {
         googleFutureClient = GoogleGrpc.newFutureStub(channel);
     }
 
+    @Override
     public void shutdown() throws InterruptedException {
         channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
     }
 
     /**
-     * Search query in async way in dummy google backend.
+     * Search searches query in async way in dummy google backend.
      */
+    @Override
     public Result search(String query) {
         logger.info("Starting search for " + query + " ...");
 
@@ -52,6 +51,11 @@ public class AsyncClient implements SearchClient {
 
     @Override
     public void watch(String query) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void biWatch(String query) {
         throw new UnsupportedOperationException();
     }
 }

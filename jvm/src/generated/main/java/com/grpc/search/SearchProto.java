@@ -29,11 +29,12 @@ public final class SearchProto {
     java.lang.String[] descriptorData = {
       "\n\014search.proto\022\006search\"\030\n\007Request\022\r\n\005que" +
       "ry\030\001 \001(\t\"5\n\006Result\022\r\n\005title\030\001 \001(\t\022\013\n\003url" +
-      "\030\002 \001(\t\022\017\n\007snippet\030\003 \001(\t2c\n\006Google\022+\n\006Sea" +
-      "rch\022\017.search.Request\032\016.search.Result\"\000\022," +
-      "\n\005Watch\022\017.search.Request\032\016.search.Result" +
-      "\"\0000\001B&\n\017com.grpc.searchB\013SearchProtoP\001\242\002" +
-      "\003GGLb\006proto3"
+      "\030\002 \001(\t\022\017\n\007snippet\030\003 \001(\t2\225\001\n\006Google\022+\n\006Se" +
+      "arch\022\017.search.Request\032\016.search.Result\"\000\022" +
+      ",\n\005Watch\022\017.search.Request\032\016.search.Resul" +
+      "t\"\0000\001\0220\n\007BiWatch\022\017.search.Request\032\016.sear" +
+      "ch.Result\"\000(\0010\001B&\n\017com.grpc.searchB\013Sear" +
+      "chProtoP\001\242\002\003GGLb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

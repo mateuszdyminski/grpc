@@ -9,14 +9,21 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import static com.grpc.util.Time.sleepUpToMiilis;
+import static java.lang.String.format;
+
 /**
- * User mdyminski
+ * StreamClient is a streaming client showing how to deal with one-side-streams and bidirectional-stream.
  */
 public class StreamClient implements SearchClient {
 
@@ -24,10 +31,8 @@ public class StreamClient implements SearchClient {
 
     private final ManagedChannel channel;
     private final GoogleGrpc.GoogleStub googleStub;
+    private final SimpleDateFormat dt = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
 
-    /**
-     * Construct client with Streaming API to Load balancer at {@code host:port}.
-     */
     public StreamClient(String host, int port) {
         channel = ManagedChannelBuilder.forAddress(host, port)
                 .usePlaintext(true)
@@ -35,52 +40,20 @@ public class StreamClient implements SearchClient {
         googleStub = GoogleGrpc.newStub(channel);
     }
 
+    @Override
     public void shutdown() throws InterruptedException {
         channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
     }
 
-    /**
-     * Search query in dummy google backend.
-     */
+    @Override
     public Result search(String query) {
-        logger.info("Starting search for " + query + "...");
-
-        final Request request = Request.newBuilder().setQuery(query).build();
-        final CountDownLatch latch = new CountDownLatch(1); // we expect only 1 result
-        final List<Result> results = new ArrayList<Result>();
-
-        StreamObserver<Result> stream = new StreamObserver<Result>() {
-            @Override
-            public void onNext(Result value) {
-                logger.info("Search result: " + value.getTitle());
-                results.add(value);
-                latch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                logger.severe(("Error while watching for results! " + t.getMessage()));
-                throw new RuntimeException("Error while watching for results!", t);
-            }
-
-            @Override
-            public void onCompleted() {
-                logger.info("Watch done!");
-            }
-        };
-
-        googleStub.watch(request, stream);
-        Try.ofFailable(() -> {
-            latch.await();
-            return null;
-        }).getUnchecked();
-
-        return results.get(0);
+        throw new UnsupportedOperationException();
     }
 
     /**
-     * Watch for query in dummy google backend.
+     * Watch showing how to deal with one-directional stream.
      */
+    @Override
     public void watch(String query) {
         logger.info("Starting watching for " + query + "...");
 
@@ -107,6 +80,47 @@ public class StreamClient implements SearchClient {
         };
 
         googleStub.watch(request, stream);
+
+        Uninterruptibles.awaitUninterruptibly(latch, 100, TimeUnit.SECONDS);
+    }
+
+    /**
+     * BiWatch showing how to deal with bidirectional stream.
+     */
+    @Override
+    public void biWatch(String query) {
+        logger.info("Starting biWatching for " + query + "...");
+
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        StreamObserver<Result> stream = new StreamObserver<Result>() {
+            @Override
+            public void onNext(Result value) {
+                logger.info("Search result: " + value.getTitle());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                logger.severe(("Error while watching for results! " + t.getMessage()));
+                latch.countDown();
+            }
+
+            @Override
+            public void onCompleted() {
+                logger.info("Watch done!");
+                latch.countDown();
+            }
+        };
+
+        StreamObserver<com.grpc.search.Request> requests = googleStub.biWatch(stream);
+
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        executor.submit(() -> {
+            while(true) {
+                requests.onNext(Request.newBuilder().setQuery(query + dt.format(new Date())).build());
+                sleepUpToMiilis(10000);
+            }
+        });
 
         Uninterruptibles.awaitUninterruptibly(latch, 100, TimeUnit.SECONDS);
     }

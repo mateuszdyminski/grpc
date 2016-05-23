@@ -13,6 +13,8 @@ import (
 	pb "github.com/mateuszdyminski/grpc/golang/search"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"io"
+	"fmt"
 )
 
 var (
@@ -52,7 +54,7 @@ func (s *server) Watch(req *pb.Request, stream pb.Google_WatchServer) error { //
 		wg.Add(1)
 		go func(backend pb.GoogleClient) { // HL
 			defer wg.Done()                    // HL
-			watchBackend(ctx., backend, req, c) // HL
+			watchBackend(ctx, backend, req, c) // HL
 		}(b) // HL
 	}
 	go func() {
@@ -85,11 +87,112 @@ func watchBackend(ctx context.Context, backend pb.GoogleClient, req *pb.Request,
 		res, err := stream.Recv() // HL
 		select {
 		case c <- result{res, err}: // HL
-			if err != nil { return }
+			if err != nil {
+				return
+			}
 		case <-ctx.Done():
 			return
 		}
 	}
+}
+
+// BiWatch runs Watch RPCs in parallel on the backends and returns a
+// merged stream of results.
+func (s *server) BiWatch(stream pb.Google_BiWatchServer) error { // HL
+	ctx := stream.Context()
+	c := make(chan result) // HL
+	searches := make([]chan pb.Request, 0)
+	searches = append(searches, make(chan pb.Request))
+	searches = append(searches, make(chan pb.Request))
+
+	done := make(chan bool) // HL
+	go func() {
+		for {
+			in, err := stream.Recv()
+			if err == io.EOF {
+				done <- true
+				return
+			}
+			if err != nil {
+				done <- true
+				return
+			}
+
+			for i := range searches {
+				searches[i] <- *in
+			}
+		}
+	}()
+
+	var wg sync.WaitGroup
+	for i, b := range s.backends {
+		wg.Add(1)
+		go func(backend pb.GoogleClient, index int) { // HL
+			defer wg.Done()                    // HL
+			fmt.Printf("Start watching to channel %d \n", &searches[i])
+			watchBiBackend(ctx, backend, searches[index], c) // HL
+		}(b, i) // HL
+	}
+	go func() {
+		wg.Wait()
+		close(c) // HL
+	}()
+	for res := range c { // HL
+		if res.err != nil {
+			return res.err
+		}
+		if err := stream.Send(res.res); err != nil { // HL
+			return err // HL
+		} // HL
+	}
+	return nil
+}
+
+// watchBiBackend runs Watch on a single backend and sends results on c.
+// watchBiBackend returns when ctx.Done is closed or stream.Recv fails.
+func watchBiBackend(ctx context.Context, backend pb.GoogleClient, searchFor chan pb.Request, c chan result) {
+	fmt.Printf("Start watching from channel %d \n", &searchFor)
+	stream, err := backend.BiWatch(ctx) // HL
+	if err != nil {
+		select {
+		case c <- result{err: err}: // HL
+		case <-ctx.Done():
+		}
+		return
+	}
+
+	done := make(chan bool)
+	go func() {
+		for {
+			res, err := stream.Recv() // HL
+			select {
+			case c <- result{res, err}:
+				if err != nil {
+					done <- true
+					return
+				}
+			case <-ctx.Done():
+				done <- true
+				return
+			}
+		}
+	} ()
+
+	go func() {
+		for {
+			select {
+			case req := <-searchFor:
+				err := stream.Send(&req)
+				if err != nil {
+					done <- true
+					return
+				}
+			}
+		}
+	}()
+
+	<- done
+	return
 }
 
 func main() {
