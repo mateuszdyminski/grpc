@@ -1,0 +1,236 @@
+Take your microservices to the next level with gRPC
+
+Mateusz Dymiński
+@m_dyminski
+github.com/mateuszdyminski/grpc
+
+* gRPC nowy framework RPC stworzony przez Google
+
+.link http://grpc.io
+
+- classic RPC and streaming RPC
+- Multi-language: *Java*, *Go*, *C*, C++, Node.js, Python, Ruby, Objective-C, PHP, i C#
+- IDL: *Protocol* *Buffers* *3*
+- Transport: *HTTP2*
+- Auth: *SSL/TLS*
+
+* gRPC
+
+.image grpc/grpc_concept.png _ 900
+
+* gRPC streaming basics
+
+Clients starts communication with server.
+
+Messages are delivered in FIFO order.
+
+Parallel streams.
+
+One TCP connection - HTTP/2.
+
+Buffering and flow-control
+
+Examples:
+
+- bi-directional streaming: chat
+- stream server → client: tick chart
+- stream client → server: data aggregation / IoT
+
+* gRPC users
+
+150+ imports - [[https://godoc.org/google.golang.org/grpc?importers][google.golang.org/grpc]] on [[http://godoc.org][godoc.org]]
+
+Projects:
+- [[https://github.com/cockroachdb/cockroach][CockroachDB]]: Super stable distributed DB
+- [[http://bazil.org][Bazil]]: distributed file system
+- [[http://coreos.com/etcd/][CoreOS/Etcd]]: distributed consistent key-value store
+- [[https://godoc.org/google.golang.org/cloud/bigtable][Google Cloud Bigtable]]: sparse table storage
+- [[http://vitess.io/][YouTube/Vitess]]: storage platform for scaling MySQL
+- [[https://github.com/gengo/grpc-gateway][gRPC Gateway]]: revers proxy - translates REST into gRPC
+
+* Microservices - problems
+
+- JSON
+- API versioning
+- Single change in API requires changes in many services
+- Request tracing
+- QoS - deadline
+- Request cancelation
+
+* Microservices - problems - JSON
+
+MacBook Pro 2.6 GHz i7 16GB
+
+*protobuf* *vs* *golang-json-serializer*
+
+  test                               iter         time/iter      bytes alloc     allocs
+  -------------------------------------------------------------------------------------------
+  BenchmarkJsonMarshal-8             500000       3714 ns/op     1232 B/op       10 allocs/op
+  BenchmarkJsonUnmarshal-8           500000       4125 ns/op      416 B/op        7 allocs/op
+  BenchmarkProtobufMarshal-8        1000000       1554 ns/op      200 B/op        7 allocs/op
+  BenchmarkProtobufUnmarshal-8      1000000       1055 ns/op      192 B/op       10 allocs/op
+
+  encoded sizes:
+  default    1232
+  protobuf   243
+
+*Diff* *serialization:* *3714* */* *1554* *=* *2.39*
+*Diff* *deserialization:* *4125* */* *1055* *=* *3.91*
+
+* Mikroserwisy - problems - docs
+
+http://some-host.com/users/mdyminski - *GET?* *POST?* *PUT?* *DELETE?*
+
+vs
+
+deleteUser(String name)
+
+*  Mikroserwisy - problems - JSON
+
+- Slow - demo
+- Schemaless
+- Size of requests
+- Versioning
+- Validation
+
+* Dummy Google
+
+* Architecture
+
+.image grpc/system.svg _ 900
+
+* Demo! - Google search
+
+* Protocol definition
+
+.code ../proto/search.proto
+
+* Generating code - how to
+
+.code ../proto/README.md
+
+* Generated code
+
+.code ../golang/search/search.pb.go /type GoogleClient/,/^}/
+.code ../golang/search/search.pb.go /type GoogleServer/,/^}/
+.code ../golang/search/search.pb.go /type Request/,/^}/
+.code ../golang/search/search.pb.go /type Result/,/^}/
+
+* Frontend calls Search on backends and waits for the first result
+
+.image grpc/search.svg _ 900
+
+* Demo client
+
+- Frontend request tracing
+- Backend request tracing
+- Connection logs
+
+* Source code - client
+
+.image grpc/client.svg _ 900
+
+* Source code - client
+
+.code ../golang/client/client.go /func main/,/^}
+
+* Kod źródłowy - client
+
+.code ../golang/client/client.go /func search/,/^}
+
+gRPC blocks the execution when search is called.
+
+gRPC cancels the request when first result is returned.
+
+* Backend
+
+.image grpc/backend.svg _ 900
+
+* Source code - backend
+
+.code ../golang/backend/backend.go /func main/,/^}
+
+* Source code - backend
+
+.code ../golang/backend/backend.go /[)] Search/,/^}
+
+* Source code - backend
+
+.code ../golang/backend/backend.go /func logSleep/,/^}
+
+* Frontend
+
+.image grpc/frontend.svg _ 900
+
+* Source code - frontend (search)
+
+`Search` returns as fast as it gets the first result.
+gRPC cancels other requests by calling `ctx.Cancel()`:
+
+.code ../golang/frontend/frontend.go /Search/,/^}/
+
+.code ../golang/frontend/frontend.go /type result/,/^}/
+
+* Streaming RPC
+
+* New Watch method
+
+.code ../proto/search.proto
+
+* Frontend calls Watch on both backends
+
+.image grpc/watch.svg _ 900
+
+* Demo client --mode=watch
+
+- Debugging active stream
+- Request cancelation
+
+* Client
+
+.image grpc/client.svg _ 900
+
+* Source code - client (watch)
+
+.code ../golang/client/client.go /func watch/,/^}
+
+* Backend
+
+.image grpc/backend.svg _ 900
+
+* Source code - backend (watch)
+
+.code ../golang/backend/backend.go /Watch/,/^}
+
+* Frontend
+
+.image grpc/frontend.svg _ 900
+
+* Source code - frontend (watch)
+
+.code ../golang/frontend/frontend.go /Watch/,/return nil/
+
+* Source code - frontend (watchBackend)
+
+.code ../golang/frontend/frontend.go /func watchBackend/,/^}/
+
+* gRPC Gateway - github.com/gengo/grpc-gateway
+
+grpc-gateway is a plugin of protoc. It reads gRPC service definition, and generates a reverse-proxy server which translates a RESTful JSON API into gRPC.
+
+It helps you to provide your APIs in both gRPC and RESTful style at the same time.
+
+.image grpc/grpc-gateway.png _ 600
+
+* gRPC summary
+
+- Ideal for distributed systems (streams, requests cancellation, request tracing)
+- Fast - Protocol Buffers + HTTP/2
+- Self-documented - RPC
+- HTTP/2
+- Multi-language support( *Java*, *Go*, *C*, C++, Node.js, Python, Ruby, Objective-C, PHP, i C#)
+- Nicely suits for mobile applications - Java, Objective-C
+- Load balancer
+- SSL/TLS
+
+* Questions?

@@ -72,7 +72,7 @@ type GoogleClient interface {
 	Search(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Result, error)
 	// Watch returns a stream of Google search results for the query.
 	Watch(ctx context.Context, in *Request, opts ...grpc.CallOption) (Google_WatchClient, error)
-	// Watch returns a stream of Google search results for the stream of query.
+	// BiWatch returns a stream of Google search results for the stream of queries.
 	BiWatch(ctx context.Context, opts ...grpc.CallOption) (Google_BiWatchClient, error)
 }
 
@@ -163,7 +163,7 @@ type GoogleServer interface {
 	Search(context.Context, *Request) (*Result, error)
 	// Watch returns a stream of Google search results for the query.
 	Watch(*Request, Google_WatchServer) error
-	// Watch returns a stream of Google search results for the stream of query.
+	// BiWatch returns a stream of Google search results for the stream of queries.
 	BiWatch(Google_BiWatchServer) error
 }
 
