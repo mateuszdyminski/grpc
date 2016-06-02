@@ -1,0 +1,21 @@
+syntax = "proto3";
+package proto;
+
+message User {
+	string firstName = 1;
+	string lastName = 2;
+	int64 birthDay = 3;
+	string phone = 4;
+	int32 gender = 5;
+	bool isEmployed = 6;
+	double salary = 7;
+	string bio = 8;
+	message WebSite {
+		string url = 1;
+		string title = 2;
+		repeated string snippets = 3;
+	}
+	repeated WebSite webSites = 9;
+}
+
+
