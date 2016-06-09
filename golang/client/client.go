@@ -5,18 +5,18 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"time"
 	"math/rand"
+	"time"
 
-	"golang.org/x/net/context"
 	pb "github.com/mateuszdyminski/grpc/golang/search"
+	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
 
 var (
 	server = flag.String("server", "localhost:36060", "server address")
-	mode = flag.String("mode", "search", `one of "search" or "watch"`)
-	query = flag.String("query", "test", "query string")
+	mode   = flag.String("mode", "search", `one of "search" or "watch"`)
+	query  = flag.String("query", "test", "query string")
 )
 
 func main() {
@@ -45,7 +45,7 @@ func main() {
 
 // search issues a search for query and prints the result.
 func search(client pb.GoogleClient, query string) {
-	ctx, cancel := context.WithTimeout(context.Background(), 80 * time.Millisecond) // HL
+	ctx, cancel := context.WithTimeout(context.Background(), 80*time.Millisecond) // HL
 	defer cancel()
 	req := &pb.Request{Query: query}    // HL
 	res, err := client.Search(ctx, req) // HL
@@ -122,5 +122,5 @@ func send(stream pb.Google_BiWatchClient, query string) {
 
 // randomDuration returns a random duration up to max, at intervals of max/10.
 func randomDuration(max time.Duration) time.Duration {
-	return time.Duration(1 + int64(rand.Intn(10))) * (max / 10)
+	return time.Duration(1+int64(rand.Intn(10))) * (max / 10)
 }

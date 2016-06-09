@@ -9,12 +9,13 @@ import (
 	_ "net/http/pprof"
 	"time"
 
+	"io"
+	"net/http"
+
 	pb "github.com/mateuszdyminski/grpc/golang/search"
 	"golang.org/x/net/context"
 	"golang.org/x/net/trace"
 	"google.golang.org/grpc"
-	"io"
-	"net/http"
 )
 
 var (

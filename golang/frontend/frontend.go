@@ -10,11 +10,12 @@ import (
 
 	"net/http"
 
+	"fmt"
+	"io"
+
 	pb "github.com/mateuszdyminski/grpc/golang/search"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	"io"
-	"fmt"
 )
 
 var (
@@ -128,7 +129,7 @@ func (s *server) BiWatch(stream pb.Google_BiWatchServer) error { // HL
 	for i, b := range s.backends {
 		wg.Add(1)
 		go func(backend pb.GoogleClient, index int) { // HL
-			defer wg.Done()                    // HL
+			defer wg.Done() // HL
 			fmt.Printf("Start watching to channel %d \n", &searches[i])
 			watchBiBackend(ctx, backend, searches[index], c) // HL
 		}(b, i) // HL
@@ -176,7 +177,7 @@ func watchBiBackend(ctx context.Context, backend pb.GoogleClient, searchFor chan
 				return
 			}
 		}
-	} ()
+	}()
 
 	go func() {
 		for {
@@ -191,7 +192,7 @@ func watchBiBackend(ctx context.Context, backend pb.GoogleClient, searchFor chan
 		}
 	}()
 
-	<- done
+	<-done
 	return
 }
 

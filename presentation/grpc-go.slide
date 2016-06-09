@@ -77,7 +77,7 @@ MacBook Pro 2.6 GHz i7 16GB
 *Diff* *serialization:* *3714* */* *1554* *=* *2.39*
 *Diff* *deserialization:* *4125* */* *1055* *=* *3.91*
 
-* Mikroserwisy - problems - docs
+* Microservices - problems - docs
 
 http://some-host.com/users/mdyminski - *GET?* *POST?* *PUT?* *DELETE?*
 
@@ -85,13 +85,12 @@ vs
 
 deleteUser(String name)
 
-*  Mikroserwisy - problems - JSON
+*  Microservices - problems - JSON
 
 - Slow - demo
 - Schemaless
 - Size of requests
 - Versioning
-- Validation
 
 * Dummy Google
 
@@ -113,6 +112,9 @@ deleteUser(String name)
 
 .code ../golang/search/search.pb.go /type GoogleClient/,/^}/
 .code ../golang/search/search.pb.go /type GoogleServer/,/^}/
+
+* Generated code
+
 .code ../golang/search/search.pb.go /type Request/,/^}/
 .code ../golang/search/search.pb.go /type Result/,/^}/
 
@@ -134,7 +136,7 @@ deleteUser(String name)
 
 .code ../golang/client/client.go /func main/,/^}
 
-* Kod źródłowy - client
+* Source code - client
 
 .code ../golang/client/client.go /func search/,/^}
 

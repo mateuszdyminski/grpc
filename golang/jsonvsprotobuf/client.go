@@ -24,22 +24,22 @@ func jsonBody() ([]byte, error) {
 
 func generateUser() pb.User {
 	user := pb.User{
-		FirstName  : "Jan",
-		LastName   : "Kowalski",
-		BirthDay   : 1464859931,
-		Phone      : "71-333-33-33",
-		Gender     : 2,
-		IsEmployed : true,
-		Salary     : 1000.0,
-		Bio        : "Handsome, biking etc",
+		FirstName:  "Jan",
+		LastName:   "Kowalski",
+		BirthDay:   1464859931,
+		Phone:      "71-333-33-33",
+		Gender:     2,
+		IsEmployed: true,
+		Salary:     1000.0,
+		Bio:        "Handsome, biking etc",
 	}
 
 	for i := 0; i <= 1000; i++ {
 		user.WebSites = append(user.WebSites,
 			&pb.User_WebSite{
-				Url: "",
-				Title: "",
-				Snippets: []string {"Some snippet 1", "Some snippet 2", "Some snippet 3", "Some snippet 4"},
+				Url:      "",
+				Title:    "",
+				Snippets: []string{"Some snippet 1", "Some snippet 2", "Some snippet 3", "Some snippet 4"},
 			})
 	}
 
@@ -48,7 +48,7 @@ func generateUser() pb.User {
 
 func main() {
 	format := flag.String("format", "json", "The encoding to use. json or proto")
-	duration := flag.Int("duration", 60, "Duration to run in seconds.")
+	duration := flag.Int("duration", 10, "Duration to run in seconds.")
 	flag.Parse()
 
 	var data []byte
