@@ -30,8 +30,8 @@ public class Starter {
      * Search Client. First argument is sync/async/deadline/stream type of the client. Second is a method {search/watch/biwatch}. Third if provided, is the query phrase
      */
     public static void main(String[] args) throws Exception {
-        ClientType type = ClientType.STREAM;
-        Method method = BIWATCH;
+        ClientType type = ClientType.SYNC;
+        Method method = SEARCH;
         String query = "test";
 
         if (args.length > 0) {
