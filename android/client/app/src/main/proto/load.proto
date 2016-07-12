@@ -1,0 +1,45 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "com.grpc.load";
+option java_outer_classname = "LoadProto";
+option objc_class_prefix = "GGL";
+
+package load;
+
+service Load {
+	// Load loads specified number of users.
+	rpc Load(Request) returns (Result) {}
+
+	// LoadStream loads specified numeber of users but in stream.
+	rpc LoadStream(Request) returns (stream Result) {}
+}
+
+message Request {
+	int32 batchSize = 1;
+	int32 total = 2;
+}
+
+message Result {
+	repeated User users = 1;
+
+	message User {
+		string firstName = 1;
+		string lastName = 2;
+		int64 birthDay = 3;
+		string phone = 4;
+		int32 gender = 5;
+		bool isEmployed = 6;
+		double salary = 7;
+		string bio = 8;
+		message WebSite {
+			string url = 1;
+			string title = 2;
+			repeated string snippets = 3;
+		}
+		repeated WebSite webSites = 9;
+	}
+}
+
+
+
+
