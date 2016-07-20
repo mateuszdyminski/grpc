@@ -2,12 +2,14 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
+
+	"fmt"
+	"time"
 
 	"github.com/gorilla/mux"
 	pb "github.com/mateuszdyminski/grpc/android/load"
-	"time"
-	"fmt"
 )
 
 func main() {
@@ -15,7 +17,7 @@ func main() {
 	r.HandleFunc("/load", handler).Methods("POST")
 
 	// user http server
-	http.ListenAndServe(":10000", r)
+	log.Fatal(http.ListenAndServe(":11001", r))
 }
 
 func handler(w http.ResponseWriter, req *http.Request) {

@@ -40,13 +40,17 @@ Przykłady:
 
 150+ importów - [[https://godoc.org/google.golang.org/grpc?importers][google.golang.org/grpc]] on [[http://godoc.org][godoc.org]]
 
-Biblioteki w Go:
+Go:
 - [[https://github.com/cockroachdb/cockroach][CockroachDB]]: Super stable distributed DB
 - [[http://bazil.org][Bazil]]: distributed file system
 - [[http://coreos.com/etcd/][CoreOS/Etcd]]: distributed consistent key-value store
 - [[https://godoc.org/google.golang.org/cloud/bigtable][Google Cloud Bigtable]]: sparse table storage
 - [[http://vitess.io/][YouTube/Vitess]]: storage platform for scaling MySQL
 - [[https://github.com/gengo/grpc-gateway][gRPC Gateway]]: revers proxy - translates REST into gRPC
+
+Java:
+- [[https://cloud.google.com/blog/big-data/2016/03/announcing-grpc-alpha-for-google-cloud-pubsub][GCE pub/sub]] - Google Cloud Engine Pub/Sub client
+
 
 * Mikroserwisy - problemy
 
@@ -96,6 +100,16 @@ Macbook Pro 2.7 GHz i7 16GB
 
 *Diff* *serialization:* *62.5* */* *19.0* *=* *3.29*
 *Diff* *deserialization:* *114.9* */* *25.1* *=* *4.58*
+
+* Mikroserwisy - JSON vs PROTOBUF - demo
+
+Konfiguracja:
+- Klient wysyła requesty {Protobuf, JSON}
+- Serwer HTTP deserializujący JSON
+- Serwer HTTP deserializujący Protobuf
+
+Test:
+- Ile requestów w ciągu 10s
 
 * Mikroserwisy - problemy
 

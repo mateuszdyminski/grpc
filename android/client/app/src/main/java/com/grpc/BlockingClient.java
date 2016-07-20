@@ -12,13 +12,13 @@ import java.util.logging.Logger;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
-public class AsyncClient {
+public class BlockingClient {
 
-    private static final Logger logger = Logger.getLogger(AsyncClient.class.getName());
+    private static final Logger logger = Logger.getLogger(BlockingClient.class.getName());
     private final ManagedChannel channel;
     private final LoadGrpc.LoadBlockingStub client;
 
-    public AsyncClient(String host, int port) {
+    public BlockingClient(String host, int port) {
         channel = ManagedChannelBuilder.forAddress(host, port)
                 .usePlaintext(true)
                 .build();

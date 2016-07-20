@@ -30,9 +30,9 @@ public class Starter {
      * Search Client. First argument is sync/async/deadline/stream type of the client. Second is a method {search/watch/biwatch}. Third if provided, is the query phrase
      */
     public static void main(String[] args) throws Exception {
-        ClientType type = ClientType.SYNC;
-        Method method = SEARCH;
-        String query = "test";
+        ClientType type = ClientType.STREAM;
+        Method method = WATCH;
+        String query = "siili-java";
 
         if (args.length > 0) {
             type = ClientType.fromString(args[0]).getUnchecked();

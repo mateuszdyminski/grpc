@@ -15,11 +15,6 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/user", UserHandler).Methods("POST")
 
-	// pprof http server
-	go func() {
-		log.Println(http.ListenAndServe("localhost:6060", nil))
-	}()
-
 	// user http server
 	http.ListenAndServe(":10000", r)
 }

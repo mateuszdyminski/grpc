@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"time"
 
+	"fmt"
+
 	"github.com/golang/protobuf/proto"
 	pb "github.com/mateuszdyminski/grpc/golang/jsonvsprotobuf/proto"
 )
@@ -53,12 +55,15 @@ func main() {
 
 	var data []byte
 	var err error
+	var port int
 
 	switch *format {
 	case "json":
 		data, err = jsonBody()
+		port = 10000
 	case "proto":
 		data, err = protoBody()
+		port = 10001
 	}
 
 	if err != nil {
@@ -70,7 +75,7 @@ func main() {
 	requestTotal := 0
 	go func() {
 		for {
-			resp, err := http.Post("http://127.0.0.1:10000/user", "", bytes.NewReader(data))
+			resp, err := http.Post(fmt.Sprintf("http://127.0.0.1:%d/user", port), "", bytes.NewReader(data))
 			if err != nil {
 				log.Fatalf("Failed http request: %v", err)
 			}

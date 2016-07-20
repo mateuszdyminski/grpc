@@ -6,13 +6,14 @@ import (
 	"log"
 	"net"
 
+	"time"
+
 	pb "github.com/mateuszdyminski/grpc/android/load"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	"time"
 )
 
-var port = flag.Int("port", 36111, "RPC port")
+var port = flag.Int("port", 11002, "RPC port")
 
 type server struct{}
 

@@ -63,20 +63,20 @@ public class MainActivity extends Activity {
 
         private final Logger logger = Logger.getLogger(RetrieveUsersTask.class.getName());
 
-        public static final int BATCH_SIZE = 1;
-        public static final int TOTAL = 10000;
+        public static final int BATCH_SIZE = 5;
+        public static final int TOTAL = 1000;
 
-        private AsyncClient client = new AsyncClient("192.168.3.152", 36111);
-        private JsonClient jsonClient = new JsonClient("192.168.3.152", 10000);
+        private BlockingClient blockingGrpcClient = new BlockingClient("192.168.3.115", 11002);
+        private JsonClient jsonClient = new JsonClient("192.168.3.115", 11001);
 
         @Override
         protected String doInBackground(Type... params) {
             try {
                 switch (params[0]) {
                     case GRPC:
-                        return client.load(BATCH_SIZE, TOTAL);
+                        return blockingGrpcClient.load(BATCH_SIZE, TOTAL);
                     case GRPC_STREAM:
-                        return client.loadStream(BATCH_SIZE, TOTAL);
+                        return blockingGrpcClient.loadStream(BATCH_SIZE, TOTAL);
                     case JSON:
                         return jsonClient.load(BATCH_SIZE, TOTAL);
                     default:
