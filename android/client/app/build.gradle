@@ -43,9 +43,9 @@ dependencies {
     compile 'com.google.code.findbugs:jsr305:3.0.0'
     compile 'com.google.guava:guava:18.0'
 
-    compile 'io.grpc:grpc-protobuf-lite:0.15.0'
-    compile 'io.grpc:grpc-okhttp:0.15.0'
-    compile 'io.grpc:grpc-stub:0.15.0'
+    compile 'io.grpc:grpc-protobuf-lite:1.0.1'
+    compile 'io.grpc:grpc-okhttp:1.0.1'
+    compile 'io.grpc:grpc-stub:1.0.1'
     compile 'javax.annotation:javax.annotation-api:1.2'
 
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
@@ -60,7 +60,7 @@ protobuf {
     }
     plugins {
         grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:0.15.0'
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.0.1'
         }
     }
     generateProtoTasks {

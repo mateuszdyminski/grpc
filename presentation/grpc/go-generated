@@ -1,0 +1,10 @@
+type GoogleClient interface {
+	// Search returns a Google search result for the query.
+	Search(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Result, error)
+}
+
+type GoogleServer interface {
+	// Search returns a Google search result for the query.
+	Search(context.Context, *Request) (*Result, error)
+}
+

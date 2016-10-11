@@ -1,4 +1,4 @@
-package com.grpc.util;
+package com.grpc.common;
 
 /**
  * This is similar to the Java {@link java.util.function.Consumer Consumer} function type.

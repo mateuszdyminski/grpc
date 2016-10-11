@@ -1,22 +1,22 @@
-/**
- * Creates a new async stub that supports all call types for the service
- */
-public static GoogleStub newStub(io.grpc.Channel channel) {
-  return new GoogleStub(channel);
-}
+  /**
+   * Creates a new async stub that supports all call types for the service
+   */
+  public static GoogleStub newStub(io.grpc.Channel channel) {
+    return new GoogleStub(channel);
+  }
 
-/**
- * Creates a new blocking-style stub that supports unary and streaming output calls on the service
- */
-public static GoogleBlockingStub newBlockingStub(
-    io.grpc.Channel channel) {
-  return new GoogleBlockingStub(channel);
-}
+  /**
+   * Creates a new blocking-style stub that supports unary and streaming output calls on the service
+   */
+  public static GoogleBlockingStub newBlockingStub(
+      io.grpc.Channel channel) {
+    return new GoogleBlockingStub(channel);
+  }
 
-/**
- * Creates a new ListenableFuture-style stub that supports unary and streaming output calls on the service
- */
-public static GoogleFutureStub newFutureStub(
-    io.grpc.Channel channel) {
-  return new GoogleFutureStub(channel);
-}
+  /**
+   * Creates a new ListenableFuture-style stub that supports unary and streaming output calls on the service
+   */
+  public static GoogleFutureStub newFutureStub(
+      io.grpc.Channel channel) {
+    return new GoogleFutureStub(channel);
+  }

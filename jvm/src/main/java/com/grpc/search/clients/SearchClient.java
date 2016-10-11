@@ -1,10 +1,7 @@
-package com.grpc.search.client;
+package com.grpc.search.clients;
 
 import com.grpc.search.Result;
 
-/**
- * User mdyminski
- */
 public interface SearchClient {
 
     Result search(String query);

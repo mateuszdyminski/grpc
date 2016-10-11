@@ -1,15 +1,14 @@
-package com.grpc.search.client;
+package com.grpc.search.clients;
 
 import com.google.common.collect.ImmutableMap;
-import com.grpc.util.ClientType;
-import com.grpc.util.Method;
+import com.grpc.common.ClientType;
+import com.grpc.common.Method;
 
 import java.util.Map;
 import java.util.logging.Logger;
 
-import static com.grpc.util.Method.BIWATCH;
-import static com.grpc.util.Method.SEARCH;
-import static com.grpc.util.Method.WATCH;
+import static com.grpc.common.Method.SEARCH;
+import static com.grpc.common.Method.WATCH;
 
 /**
  * Starter starts gRPC clients.
@@ -30,9 +29,9 @@ public class Starter {
      * Search Client. First argument is sync/async/deadline/stream type of the client. Second is a method {search/watch/biwatch}. Third if provided, is the query phrase
      */
     public static void main(String[] args) throws Exception {
-        ClientType type = ClientType.STREAM;
-        Method method = WATCH;
-        String query = "siili-java";
+        ClientType type = ClientType.SYNC;
+        Method method = SEARCH;
+        String query = "jdd 2016";
 
         if (args.length > 0) {
             type = ClientType.fromString(args[0]).getUnchecked();
@@ -47,7 +46,7 @@ public class Starter {
         try {
             long start = System.currentTimeMillis();
             run(type, method, query);
-            logger.info("Request took: " + (System.currentTimeMillis() - start));
+            logger.info("Request took: " + (System.currentTimeMillis() - start) + "ms");
         } catch (Exception e) {
             clients.get(type).shutdown();
         }

@@ -12,6 +12,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MainActivity extends Activity {
+
+    public static final String HOST = "10.42.0.1";
     private TextView txtView;
 
     @Override
@@ -66,8 +68,8 @@ public class MainActivity extends Activity {
         public static final int BATCH_SIZE = 5;
         public static final int TOTAL = 1000;
 
-        private BlockingClient blockingGrpcClient = new BlockingClient("192.168.3.115", 11002);
-        private JsonClient jsonClient = new JsonClient("192.168.3.115", 11001);
+        private BlockingClient blockingGrpcClient = new BlockingClient(HOST, 11002);
+        private JsonClient jsonClient = new JsonClient(HOST, 11001);
 
         @Override
         protected String doInBackground(Type... params) {

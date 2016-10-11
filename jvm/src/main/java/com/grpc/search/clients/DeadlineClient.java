@@ -1,10 +1,10 @@
-package com.grpc.search.client;
+package com.grpc.search.clients;
 
 import com.google.common.util.concurrent.Uninterruptibles;
 import com.grpc.search.GoogleGrpc;
 import com.grpc.search.Request;
 import com.grpc.search.Result;
-import com.grpc.util.Try;
+import com.grpc.common.Try;
 import io.grpc.*;
 import io.grpc.internal.GrpcUtil;
 

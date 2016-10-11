@@ -18,7 +18,7 @@ import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
 /**
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 0.15.0)",
+    value = "by gRPC proto compiler (version 1.0.1)",
     comments = "Source: load.proto")
 public class LoadGrpc {
 
@@ -71,7 +71,7 @@ public class LoadGrpc {
 
   /**
    */
-  @java.lang.Deprecated public static interface Load {
+  public static abstract class LoadImplBase implements io.grpc.BindableService {
 
     /**
      * <pre>
@@ -79,72 +79,43 @@ public class LoadGrpc {
      * </pre>
      */
     public void load(com.grpc.load.Request request,
-        io.grpc.stub.StreamObserver<com.grpc.load.Result> responseObserver);
+        io.grpc.stub.StreamObserver<com.grpc.load.Result> responseObserver) {
+      asyncUnimplementedUnaryCall(METHOD_LOAD, responseObserver);
+    }
 
     /**
      * <pre>
      * LoadStream loads specified numeber of users but in stream.
      * </pre>
      */
-    public void loadStream(com.grpc.load.Request request,
-        io.grpc.stub.StreamObserver<com.grpc.load.Result> responseObserver);
-  }
-
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1469")
-  public static abstract class LoadImplBase implements Load, io.grpc.BindableService {
-
-    @java.lang.Override
-    public void load(com.grpc.load.Request request,
-        io.grpc.stub.StreamObserver<com.grpc.load.Result> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_LOAD, responseObserver);
-    }
-
-    @java.lang.Override
     public void loadStream(com.grpc.load.Request request,
         io.grpc.stub.StreamObserver<com.grpc.load.Result> responseObserver) {
       asyncUnimplementedUnaryCall(METHOD_LOAD_STREAM, responseObserver);
     }
 
     @java.lang.Override public io.grpc.ServerServiceDefinition bindService() {
-      return LoadGrpc.bindService(this);
+      return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
+          .addMethod(
+            METHOD_LOAD,
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.grpc.load.Request,
+                com.grpc.load.Result>(
+                  this, METHODID_LOAD)))
+          .addMethod(
+            METHOD_LOAD_STREAM,
+            asyncServerStreamingCall(
+              new MethodHandlers<
+                com.grpc.load.Request,
+                com.grpc.load.Result>(
+                  this, METHODID_LOAD_STREAM)))
+          .build();
     }
   }
 
   /**
    */
-  @java.lang.Deprecated public static interface LoadBlockingClient {
-
-    /**
-     * <pre>
-     * Load loads specified number of users.
-     * </pre>
-     */
-    public com.grpc.load.Result load(com.grpc.load.Request request);
-
-    /**
-     * <pre>
-     * LoadStream loads specified numeber of users but in stream.
-     * </pre>
-     */
-    public java.util.Iterator<com.grpc.load.Result> loadStream(
-        com.grpc.load.Request request);
-  }
-
-  /**
-   */
-  @java.lang.Deprecated public static interface LoadFutureClient {
-
-    /**
-     * <pre>
-     * Load loads specified number of users.
-     * </pre>
-     */
-    public com.google.common.util.concurrent.ListenableFuture<com.grpc.load.Result> load(
-        com.grpc.load.Request request);
-  }
-
-  public static class LoadStub extends io.grpc.stub.AbstractStub<LoadStub>
-      implements Load {
+  public static final class LoadStub extends io.grpc.stub.AbstractStub<LoadStub> {
     private LoadStub(io.grpc.Channel channel) {
       super(channel);
     }
@@ -160,14 +131,22 @@ public class LoadGrpc {
       return new LoadStub(channel, callOptions);
     }
 
-    @java.lang.Override
+    /**
+     * <pre>
+     * Load loads specified number of users.
+     * </pre>
+     */
     public void load(com.grpc.load.Request request,
         io.grpc.stub.StreamObserver<com.grpc.load.Result> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(METHOD_LOAD, getCallOptions()), request, responseObserver);
     }
 
-    @java.lang.Override
+    /**
+     * <pre>
+     * LoadStream loads specified numeber of users but in stream.
+     * </pre>
+     */
     public void loadStream(com.grpc.load.Request request,
         io.grpc.stub.StreamObserver<com.grpc.load.Result> responseObserver) {
       asyncServerStreamingCall(
@@ -175,8 +154,9 @@ public class LoadGrpc {
     }
   }
 
-  public static class LoadBlockingStub extends io.grpc.stub.AbstractStub<LoadBlockingStub>
-      implements LoadBlockingClient {
+  /**
+   */
+  public static final class LoadBlockingStub extends io.grpc.stub.AbstractStub<LoadBlockingStub> {
     private LoadBlockingStub(io.grpc.Channel channel) {
       super(channel);
     }
@@ -192,13 +172,21 @@ public class LoadGrpc {
       return new LoadBlockingStub(channel, callOptions);
     }
 
-    @java.lang.Override
+    /**
+     * <pre>
+     * Load loads specified number of users.
+     * </pre>
+     */
     public com.grpc.load.Result load(com.grpc.load.Request request) {
       return blockingUnaryCall(
           getChannel(), METHOD_LOAD, getCallOptions(), request);
     }
 
-    @java.lang.Override
+    /**
+     * <pre>
+     * LoadStream loads specified numeber of users but in stream.
+     * </pre>
+     */
     public java.util.Iterator<com.grpc.load.Result> loadStream(
         com.grpc.load.Request request) {
       return blockingServerStreamingCall(
@@ -206,8 +194,9 @@ public class LoadGrpc {
     }
   }
 
-  public static class LoadFutureStub extends io.grpc.stub.AbstractStub<LoadFutureStub>
-      implements LoadFutureClient {
+  /**
+   */
+  public static final class LoadFutureStub extends io.grpc.stub.AbstractStub<LoadFutureStub> {
     private LoadFutureStub(io.grpc.Channel channel) {
       super(channel);
     }
@@ -223,15 +212,17 @@ public class LoadGrpc {
       return new LoadFutureStub(channel, callOptions);
     }
 
-    @java.lang.Override
+    /**
+     * <pre>
+     * Load loads specified number of users.
+     * </pre>
+     */
     public com.google.common.util.concurrent.ListenableFuture<com.grpc.load.Result> load(
         com.grpc.load.Request request) {
       return futureUnaryCall(
           getChannel().newCall(METHOD_LOAD, getCallOptions()), request);
     }
   }
-
-  @java.lang.Deprecated public static abstract class AbstractLoad extends LoadImplBase {}
 
   private static final int METHODID_LOAD = 0;
   private static final int METHODID_LOAD_STREAM = 1;
@@ -241,10 +232,10 @@ public class LoadGrpc {
       io.grpc.stub.ServerCalls.ServerStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.BidiStreamingMethod<Req, Resp> {
-    private final Load serviceImpl;
+    private final LoadImplBase serviceImpl;
     private final int methodId;
 
-    public MethodHandlers(Load serviceImpl, int methodId) {
+    public MethodHandlers(LoadImplBase serviceImpl, int methodId) {
       this.serviceImpl = serviceImpl;
       this.methodId = methodId;
     }
@@ -283,23 +274,4 @@ public class LoadGrpc {
         METHOD_LOAD_STREAM);
   }
 
-  @java.lang.Deprecated public static io.grpc.ServerServiceDefinition bindService(
-      final Load serviceImpl) {
-    return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
-        .addMethod(
-          METHOD_LOAD,
-          asyncUnaryCall(
-            new MethodHandlers<
-              com.grpc.load.Request,
-              com.grpc.load.Result>(
-                serviceImpl, METHODID_LOAD)))
-        .addMethod(
-          METHOD_LOAD_STREAM,
-          asyncServerStreamingCall(
-            new MethodHandlers<
-              com.grpc.load.Request,
-              com.grpc.load.Result>(
-                serviceImpl, METHODID_LOAD_STREAM)))
-        .build();
-  }
 }

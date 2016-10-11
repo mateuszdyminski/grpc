@@ -4,7 +4,7 @@ Mateusz Dymiński
 @m_dyminski
 github.com/mateuszdyminski/grpc
 
-* gRPC nowy framework RPC stworzony przez Google
+* gRPC new RPC framework created by Google
 
 .link http://grpc.io
 
@@ -216,7 +216,7 @@ gRPC cancels other requests by calling `ctx.Cancel()`:
 
 .code ../golang/frontend/frontend.go /func watchBackend/,/^}/
 
-* gRPC Gateway - github.com/gengo/grpc-gateway
+* gRPC Gateway - github.com/grpc-ecosystem/grpc-gateway
 
 grpc-gateway is a plugin of protoc. It reads gRPC service definition, and generates a reverse-proxy server which translates a RESTful JSON API into gRPC.
 

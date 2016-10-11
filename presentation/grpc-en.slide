@@ -1,0 +1,346 @@
+Take your microservices to the next level with gRPC
+
+*Mateusz* *Dymiński*
+*Siili* *Solutions*
+
+@m_dyminski
+github.com/mateuszdyminski/grpc
+
+* gRPC ia a new RPC framework created by Google
+
+.link http://grpc.io
+
+- classic RPC and streaming RPC
+- Multi-language: *Java*, *Go*, *C*, C++, Node.js, Python, Ruby, Objective-C, PHP and C#
+- IDL: *Protocol* *Buffers* *3*
+- Transport: *HTTP2*
+- Auth: *SSL/TLS*
+
+* gRPC
+
+.image grpc/grpc_concept.png _ 800
+_Source_http://grpc.io_
+
+* gRPC streaming basics
+
+Clients starts communication with server.
+
+Messages are delivered in FIFO order.
+
+Parallel streams.
+
+One TCP connection - HTTP/2.
+
+Buffering and flow-control
+
+Examples:
+
+- bi-directional streaming: chat
+- stream server → client: tick chart
+- stream client → server: data aggregation / IoT
+
+* gRPC users
+
+900+ imports - [[https://godoc.org/google.golang.org/grpc?importers][google.golang.org/grpc]] on [[http://godoc.org][godoc.org]]
+
+Go:
+- [[github.com/docker/docker/libcontainerd][Docker]]
+- [[https://github.com/cockroachdb/cockroach][CockroachDB]]: Super stable distributed DB
+- [[http://coreos.com/etcd/][CoreOS/Etcd]]: distributed consistent key-value store
+- [[http://coreos.com/rkt/][CoreOS/Rkt]]: Rocket container engine
+- [[https://godoc.org/google.golang.org/cloud/bigtable][Google Cloud Bigtable]]: sparse table storage
+- [[http://vitess.io/][YouTube/Vitess]]: storage platform for scaling MySQL
+- [[https://github.com/gengo/grpc-gateway][gRPC Gateway]]: revers proxy - translates REST into gRPC
+
+Java:
+- [[https://cloud.google.com/blog/big-data/2016/03/announcing-grpc-alpha-for-google-cloud-pubsub][GCE pub/sub]] - Google Cloud Engine Pub/Sub client
+- [[https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/speech/grpc][GCE Speech]] - Google Cloud Engine Speech client
+- [[https://github.com/Netflix/ribbon][Netflix Ribbon]] - Inter Process Communication library
+- [[https://github.com/tensorflow/tensorflow][Tensorflow]] - Scalable machine learning framework
+
+* gRPC users
+
+- Google
+- Square
+- CoreOS
+- Docker
+- Cockroach Labs
+- Vendasta
+- Netflix
+- YikYak
+- Cisco
+- Juniper
+
+* Microservices - problems
+
+- JSON
+- API versioning
+- Single change in API requires changes in many services
+- Request tracing
+- QoS - deadline
+- Request cancellation
+
+* Microservices - problems - JSON
+
+MacBook Pro 2.6 GHz i7 16GB
+
+*protobuf* *vs* *golang-json-serializer*
+
+  test                               iter         time/iter      bytes alloc     allocs
+  -------------------------------------------------------------------------------------------
+  BenchmarkJsonMarshal-8             500000       3714 ns/op     1232 B/op       10 allocs/op
+  BenchmarkJsonUnmarshal-8           500000       4125 ns/op      416 B/op        7 allocs/op
+  BenchmarkProtobufMarshal-8        1000000       1554 ns/op      200 B/op        7 allocs/op
+  BenchmarkProtobufUnmarshal-8      1000000       1055 ns/op      192 B/op       10 allocs/op
+
+  encoded sizes:
+  default    1232
+  protobuf   243
+
+*Diff* *serialization:* *3714* */* *1554* *=* *2.39*
+*Diff* *deserialization:* *4125* */* *1055* *=* *3.91*
+
+* Microservices - problems - JSON
+
+Macbook Pro 2.7 GHz i7 16GB
+
+*protobuf* *vs* *jackson*
+
+  test                      min      max      avg
+  --------------------------------------------------
+  jackson serialization     53.3     78.7     62.5
+  jackson deserialization   110.1    130.9    114.9
+  protobuf serialization    10.2     82.1     19.0
+  protobuf deserialization  19.3     35.2     25.1
+
+  encoded sizes:
+  jackson    949
+  protobuf   258
+
+*Diff* *serialization:* *62.5* */* *19.0* *=* *3.29*
+*Diff* *deserialization:* *114.9* */* *25.1* *=* *4.58*
+
+* Microservises - JSON vs PROTOBUF - demo
+
+Configurations:
+- Client sends requests {Protobuf, JSON}
+- Server HTTP deserializes JSON
+- Server HTTP deserializes Protobuf
+
+Test:
+- Number of requests in 10s
+
+* Microservices - problems
+
+http://some-host.com/users/mdyminski - *GET?* *POST?* *PUT?* *DELETE?*
+
+vs
+
+deleteUser(String name)
+
+*  Microservices - JSON's problems
+
+- Speed
+- Schemaless
+- Size
+- Versioning
+
+* Dummy Google
+
+* Architecture
+
+.image grpc/system.svg _ 800
+_Source_https://talks.golang.org/2015/gotham-grpc_
+
+* Frontend calls Search on backends and waits for first arrived result.
+
+.image grpc/search.svg _ 900
+
+* Demo! - Google search
+
+* Demo client
+
+- Frontend request tracing
+- Backend request tracing
+- Event logs
+
+* Protocol definition
+
+.code grpc/proto_search
+
+* How to generate code:
+
+- Golang
+
+	Requirements:
+		- Protobuf github.com/google/protobuf
+		- Golang protoc wrapper (go get github.com/golang/protobuf/protoc-gen-go)
+
+	protoc ./search.proto --go_out=plugins=grpc:../golang/search
+
+- Java
+
+	Requirements:
+		- Gradle
+		- protobuf-gradle-plugin
+
+	gradle generateProto
+
+* Generated code - Golang
+
+.code grpc/go-generated
+.code ../golang/search/search.pb.go /type Request/,/^}/
+.code ../golang/search/search.pb.go /type Result/,/^}/
+
+* Generated code - Java
+
+.code grpc/java-generated-entities
+
+* Generated code - Java
+
+.code grpc/java-generated
+
+* Source code - client
+
+.image grpc/client.svg _ 900
+
+* Source code - client (constructor)
+
+.code grpc/java-client-constructor
+
+* Source code - client (search)
+
+.code grpc/java-client-search
+
+gRPC blocks the thread when call the method.
+
+* Source code - future client (search)
+
+.code grpc/java-client-search-async
+
+* Source code - backend
+
+.image grpc/backend.svg _ 800
+_Source_https://talks.golang.org/2015/gotham-grpc_
+
+* Source code - backend
+
+.code grpc/java-backend-constructor-1
+
+* Source code - backend
+
+.code grpc/java-backend-constructor-2
+
+* Source code - backend
+
+.code grpc/java-backend-impl
+
+* Source code - frontend
+
+.image grpc/frontend.svg _ 800
+_Source_https://talks.golang.org/2015/gotham-grpc_
+
+* Source code - frontend (search)
+
+`Search` returns result as fast as it gets the first result from backend.
+gRPC cancels the rest of the `backend.Search` calls by `ctx`:
+
+.code ../golang/frontend/frontend.go /[)] Search/,/^}/
+
+.code ../golang/frontend/frontend.go /type result/,/^}/
+
+* RPC streaming
+
+* New Watch method
+
+.code grpc/proto_watch
+
+* Frontend calls Watch method on both backend servers
+
+.image grpc/watch.svg _ 800
+_Source_https://talks.golang.org/2015/gotham-grpc_
+
+* Demo client --mode=watch
+
+- Active stream debugging
+- Requests cancellation
+
+* Source code - client
+
+.image grpc/client.svg _ 800
+_Source_https://talks.golang.org/2015/gotham-grpc_
+
+* Source code - client (watch)
+
+.code grpc/java-client-watch
+
+* Source code - backend
+
+.image grpc/backend.svg _ 900
+
+* Source code - backend (watch)
+
+.code grpc/java-backend-constructor-watch
+
+* Source code - backend (watch)
+
+.code grpc/java-backend-watch
+
+* Source code - frontend
+
+.image grpc/frontend.svg _ 900
+
+* Source code - frontend (watch)
+
+.code ../golang/frontend/frontend.go /[)] Watch/,/return nil/
+
+* Source code - frontend (watchBackend)
+
+`Watch` cancels its request when first error occurs by calling `ctx.Done`.
+
+.code ../golang/frontend/frontend.go /func watch/,/^}/
+
+* Android demo!
+
+* Eco-system
+
+* gRPC and browsers
+
+The biggest problem with Browser clients, is that although the vast majority of them support HTTP2, do not support accessing Trailer headers.
+
+* gRPC Gateway - github.com/grpc-ecosystem/grpc-gateway
+
+grpc-gateway is a plugin of protoc. It reads gRPC service definition, and generates a reverse-proxy server which translates a RESTful JSON API into gRPC.
+
+It helps you to provide your APIs in both gRPC and RESTful style at the same time.
+
+.image grpc/grpc-gateway.png _ 600
+
+* gRPC - Load balancer
+
+- [[https://github.com/grpc/grpc/blob/master/doc/load-balancing.md][gRPC creators solution]]
+- NGINX is not an option due to lack of HTTP/2 to the backend routing.
+- [[https://github.com/nghttp2/nghttp2][nghttpx]] is an option.
+- [[https://groups.google.com/forum/#!topic/grpc-io/bfURoNLojHo][Google Cloud Load Balancer (GCLB)]] will support it by the end of the year.
+
+* Monitoring integrations
+
+- [[github.com/grpc-ecosystem/go-grpc-prometheus][GO Prometheus interceptor]]
+- [[github.com/grpc-ecosystem/java-grpc-prometheus][Java Prometheus interceptor]]
+- [[https://github.com/openzipkin/brave/tree/master/brave-grpc][Java Distributed Tracing implementation compatible with Zipkin.]]
+
+* Summary
+
+* gRPC summary
+
+- Stable - release 1.0
+- Ideal for distributed systems (streams, requests cancellation, request tracing)
+- Fast - Protocol Buffers + HTTP/2
+- Self-documented - RPC
+- HTTP/2
+- Multi-language support( *Java*, *Go*, *C*, C++, Node.js, Python, Ruby, Objective-C, PHP, i C#)
+- Nicely suits for mobile applications - Java, Objective-C
+- Load balancer
+- SSL/TLS
+
+* Questions?

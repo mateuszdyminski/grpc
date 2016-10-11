@@ -18,7 +18,7 @@ import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
 /**
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 0.14.0)",
+    value = "by gRPC proto compiler (version 1.0.1)",
     comments = "Source: search.proto")
 public class GoogleGrpc {
 
@@ -27,7 +27,7 @@ public class GoogleGrpc {
   public static final String SERVICE_NAME = "search.Google";
 
   // Static method descriptors that strictly reflect the proto.
-  @io.grpc.ExperimentalApi
+  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   public static final io.grpc.MethodDescriptor<com.grpc.search.Request,
       com.grpc.search.Result> METHOD_SEARCH =
       io.grpc.MethodDescriptor.create(
@@ -36,7 +36,7 @@ public class GoogleGrpc {
               "search.Google", "Search"),
           io.grpc.protobuf.ProtoUtils.marshaller(com.grpc.search.Request.getDefaultInstance()),
           io.grpc.protobuf.ProtoUtils.marshaller(com.grpc.search.Result.getDefaultInstance()));
-  @io.grpc.ExperimentalApi
+  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   public static final io.grpc.MethodDescriptor<com.grpc.search.Request,
       com.grpc.search.Result> METHOD_WATCH =
       io.grpc.MethodDescriptor.create(
@@ -45,7 +45,7 @@ public class GoogleGrpc {
               "search.Google", "Watch"),
           io.grpc.protobuf.ProtoUtils.marshaller(com.grpc.search.Request.getDefaultInstance()),
           io.grpc.protobuf.ProtoUtils.marshaller(com.grpc.search.Result.getDefaultInstance()));
-  @io.grpc.ExperimentalApi
+  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   public static final io.grpc.MethodDescriptor<com.grpc.search.Request,
       com.grpc.search.Result> METHOD_BI_WATCH =
       io.grpc.MethodDescriptor.create(
@@ -80,7 +80,7 @@ public class GoogleGrpc {
 
   /**
    */
-  public static interface Google {
+  public static abstract class GoogleImplBase implements io.grpc.BindableService {
 
     /**
      * <pre>
@@ -88,7 +88,9 @@ public class GoogleGrpc {
      * </pre>
      */
     public void search(com.grpc.search.Request request,
-        io.grpc.stub.StreamObserver<com.grpc.search.Result> responseObserver);
+        io.grpc.stub.StreamObserver<com.grpc.search.Result> responseObserver) {
+      asyncUnimplementedUnaryCall(METHOD_SEARCH, responseObserver);
+    }
 
     /**
      * <pre>
@@ -96,78 +98,50 @@ public class GoogleGrpc {
      * </pre>
      */
     public void watch(com.grpc.search.Request request,
-        io.grpc.stub.StreamObserver<com.grpc.search.Result> responseObserver);
-
-    /**
-     * <pre>
-     * Watch returns a stream of Google search results for the stream of query.
-     * </pre>
-     */
-    public io.grpc.stub.StreamObserver<com.grpc.search.Request> biWatch(
-        io.grpc.stub.StreamObserver<com.grpc.search.Result> responseObserver);
-  }
-
-  @io.grpc.ExperimentalApi
-  public static abstract class AbstractGoogle implements Google, io.grpc.BindableService {
-
-    @java.lang.Override
-    public void search(com.grpc.search.Request request,
-        io.grpc.stub.StreamObserver<com.grpc.search.Result> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_SEARCH, responseObserver);
-    }
-
-    @java.lang.Override
-    public void watch(com.grpc.search.Request request,
         io.grpc.stub.StreamObserver<com.grpc.search.Result> responseObserver) {
       asyncUnimplementedUnaryCall(METHOD_WATCH, responseObserver);
     }
 
-    @java.lang.Override
+    /**
+     * <pre>
+     * BiWatch returns a stream of Google search results for the stream of queries.
+     * </pre>
+     */
     public io.grpc.stub.StreamObserver<com.grpc.search.Request> biWatch(
         io.grpc.stub.StreamObserver<com.grpc.search.Result> responseObserver) {
       return asyncUnimplementedStreamingCall(METHOD_BI_WATCH, responseObserver);
     }
 
     @java.lang.Override public io.grpc.ServerServiceDefinition bindService() {
-      return GoogleGrpc.bindService(this);
+      return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
+          .addMethod(
+            METHOD_SEARCH,
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.grpc.search.Request,
+                com.grpc.search.Result>(
+                  this, METHODID_SEARCH)))
+          .addMethod(
+            METHOD_WATCH,
+            asyncServerStreamingCall(
+              new MethodHandlers<
+                com.grpc.search.Request,
+                com.grpc.search.Result>(
+                  this, METHODID_WATCH)))
+          .addMethod(
+            METHOD_BI_WATCH,
+            asyncBidiStreamingCall(
+              new MethodHandlers<
+                com.grpc.search.Request,
+                com.grpc.search.Result>(
+                  this, METHODID_BI_WATCH)))
+          .build();
     }
   }
 
   /**
    */
-  public static interface GoogleBlockingClient {
-
-    /**
-     * <pre>
-     * Search returns a Google search result for the query.
-     * </pre>
-     */
-    public com.grpc.search.Result search(com.grpc.search.Request request);
-
-    /**
-     * <pre>
-     * Watch returns a stream of Google search results for the query.
-     * </pre>
-     */
-    public java.util.Iterator<com.grpc.search.Result> watch(
-        com.grpc.search.Request request);
-  }
-
-  /**
-   */
-  public static interface GoogleFutureClient {
-
-    /**
-     * <pre>
-     * Search returns a Google search result for the query.
-     * </pre>
-     */
-    public com.google.common.util.concurrent.ListenableFuture<com.grpc.search.Result> search(
-        com.grpc.search.Request request);
-  }
-
-  public static class GoogleStub extends io.grpc.stub.AbstractStub<GoogleStub>
-      implements Google {
+  public static final class GoogleStub extends io.grpc.stub.AbstractStub<GoogleStub> {
     private GoogleStub(io.grpc.Channel channel) {
       super(channel);
     }
@@ -183,21 +157,33 @@ public class GoogleGrpc {
       return new GoogleStub(channel, callOptions);
     }
 
-    @java.lang.Override
+    /**
+     * <pre>
+     * Search returns a Google search result for the query.
+     * </pre>
+     */
     public void search(com.grpc.search.Request request,
         io.grpc.stub.StreamObserver<com.grpc.search.Result> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(METHOD_SEARCH, getCallOptions()), request, responseObserver);
     }
 
-    @java.lang.Override
+    /**
+     * <pre>
+     * Watch returns a stream of Google search results for the query.
+     * </pre>
+     */
     public void watch(com.grpc.search.Request request,
         io.grpc.stub.StreamObserver<com.grpc.search.Result> responseObserver) {
       asyncServerStreamingCall(
           getChannel().newCall(METHOD_WATCH, getCallOptions()), request, responseObserver);
     }
 
-    @java.lang.Override
+    /**
+     * <pre>
+     * BiWatch returns a stream of Google search results for the stream of queries.
+     * </pre>
+     */
     public io.grpc.stub.StreamObserver<com.grpc.search.Request> biWatch(
         io.grpc.stub.StreamObserver<com.grpc.search.Result> responseObserver) {
       return asyncBidiStreamingCall(
@@ -205,8 +191,9 @@ public class GoogleGrpc {
     }
   }
 
-  public static class GoogleBlockingStub extends io.grpc.stub.AbstractStub<GoogleBlockingStub>
-      implements GoogleBlockingClient {
+  /**
+   */
+  public static final class GoogleBlockingStub extends io.grpc.stub.AbstractStub<GoogleBlockingStub> {
     private GoogleBlockingStub(io.grpc.Channel channel) {
       super(channel);
     }
@@ -222,13 +209,21 @@ public class GoogleGrpc {
       return new GoogleBlockingStub(channel, callOptions);
     }
 
-    @java.lang.Override
+    /**
+     * <pre>
+     * Search returns a Google search result for the query.
+     * </pre>
+     */
     public com.grpc.search.Result search(com.grpc.search.Request request) {
       return blockingUnaryCall(
           getChannel(), METHOD_SEARCH, getCallOptions(), request);
     }
 
-    @java.lang.Override
+    /**
+     * <pre>
+     * Watch returns a stream of Google search results for the query.
+     * </pre>
+     */
     public java.util.Iterator<com.grpc.search.Result> watch(
         com.grpc.search.Request request) {
       return blockingServerStreamingCall(
@@ -236,8 +231,9 @@ public class GoogleGrpc {
     }
   }
 
-  public static class GoogleFutureStub extends io.grpc.stub.AbstractStub<GoogleFutureStub>
-      implements GoogleFutureClient {
+  /**
+   */
+  public static final class GoogleFutureStub extends io.grpc.stub.AbstractStub<GoogleFutureStub> {
     private GoogleFutureStub(io.grpc.Channel channel) {
       super(channel);
     }
@@ -253,7 +249,11 @@ public class GoogleGrpc {
       return new GoogleFutureStub(channel, callOptions);
     }
 
-    @java.lang.Override
+    /**
+     * <pre>
+     * Search returns a Google search result for the query.
+     * </pre>
+     */
     public com.google.common.util.concurrent.ListenableFuture<com.grpc.search.Result> search(
         com.grpc.search.Request request) {
       return futureUnaryCall(
@@ -270,10 +270,10 @@ public class GoogleGrpc {
       io.grpc.stub.ServerCalls.ServerStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.BidiStreamingMethod<Req, Resp> {
-    private final Google serviceImpl;
+    private final GoogleImplBase serviceImpl;
     private final int methodId;
 
-    public MethodHandlers(Google serviceImpl, int methodId) {
+    public MethodHandlers(GoogleImplBase serviceImpl, int methodId) {
       this.serviceImpl = serviceImpl;
       this.methodId = methodId;
     }
@@ -309,30 +309,11 @@ public class GoogleGrpc {
     }
   }
 
-  public static io.grpc.ServerServiceDefinition bindService(
-      final Google serviceImpl) {
-    return io.grpc.ServerServiceDefinition.builder(SERVICE_NAME)
-        .addMethod(
-          METHOD_SEARCH,
-          asyncUnaryCall(
-            new MethodHandlers<
-              com.grpc.search.Request,
-              com.grpc.search.Result>(
-                serviceImpl, METHODID_SEARCH)))
-        .addMethod(
-          METHOD_WATCH,
-          asyncServerStreamingCall(
-            new MethodHandlers<
-              com.grpc.search.Request,
-              com.grpc.search.Result>(
-                serviceImpl, METHODID_WATCH)))
-        .addMethod(
-          METHOD_BI_WATCH,
-          asyncBidiStreamingCall(
-            new MethodHandlers<
-              com.grpc.search.Request,
-              com.grpc.search.Result>(
-                serviceImpl, METHODID_BI_WATCH)))
-        .build();
+  public static io.grpc.ServiceDescriptor getServiceDescriptor() {
+    return new io.grpc.ServiceDescriptor(SERVICE_NAME,
+        METHOD_SEARCH,
+        METHOD_WATCH,
+        METHOD_BI_WATCH);
   }
+
 }

@@ -1,9 +1,10 @@
-package com.grpc.search.client;
+package com.grpc.search.clients;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.grpc.search.GoogleGrpc;
 import com.grpc.search.Request;
 import com.grpc.search.Result;
-import com.grpc.util.Try;
+import com.grpc.common.Try;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
@@ -12,20 +13,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * BlockingClient is a client which blocks the execution until gets its response.
+ * AsyncClient is a async client based on ListenableFuture.
  */
-public class BlockingClient implements SearchClient {
+public class AsyncClient implements SearchClient {
 
-    private static final Logger logger = Logger.getLogger(BlockingClient.class.getName());
-
+    private static final Logger logger = Logger.getLogger(AsyncClient.class.getName());
     private final ManagedChannel channel;
-    private final GoogleGrpc.GoogleBlockingClient googleBlockingStub;
+    private final GoogleGrpc.GoogleFutureStub googleFutureClient;
 
-    public BlockingClient(String host, int port) {
+    public AsyncClient(String host, int port) {
         channel = ManagedChannelBuilder.forAddress(host, port)
                 .usePlaintext(true)
                 .build();
-        googleBlockingStub = GoogleGrpc.newBlockingStub(channel);
+        googleFutureClient = GoogleGrpc.newFutureStub(channel);
     }
 
     @Override
@@ -34,16 +34,16 @@ public class BlockingClient implements SearchClient {
     }
 
     /**
-     * Search query in dummy google backend.
+     * Search searches query in async way in dummy google backend.
      */
     @Override
     public Result search(String query) {
         logger.info("Starting search for " + query + " ...");
 
-        final Request request = Request.newBuilder().setQuery(query).build();
+        Request request = Request.newBuilder().setQuery(query).build();
+        ListenableFuture<Result> resultFuture = googleFutureClient.search(request);
 
-        return Try
-                .ofFailable(() -> googleBlockingStub.search(request))
+        return Try.ofFailable(() -> resultFuture.get(1000, TimeUnit.MILLISECONDS))
                 .onSuccess(r -> logger.info("Search result: " + r))
                 .onFailure(e -> logger.log(Level.SEVERE, "RPC failed: {0}", e))
                 .getUnchecked();

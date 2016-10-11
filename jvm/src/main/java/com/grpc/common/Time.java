@@ -1,4 +1,4 @@
-package com.grpc.util;
+package com.grpc.common;
 
 import java.util.Random;
 

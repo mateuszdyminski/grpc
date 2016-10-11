@@ -1,4 +1,4 @@
-package com.grpc.util;
+package com.grpc.common;
 
 /**
  * This is similar to the Java Supplier function type.

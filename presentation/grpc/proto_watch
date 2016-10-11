@@ -8,14 +8,14 @@ package search;
 service Google {
 	// Search returns a Google search result for the query.
 	rpc Search(Request) returns (Result) {}
-	// Watch returns a stream of Google search results for the query.
-	rpc Watch(Request) returns (stream Result) {}
-	// BiWatch returns a stream of Google search results for the stream of queries.
-	rpc BiWatch(stream Request) returns (stream Result) {}
+	// Watch returns a stream of Google search results for the query. // HL
+	rpc Watch(Request) returns (stream Result) {} // HL
 }
+
 message Request {
 	string query = 1;
 }
+
 message Result {
 	string title = 1;
 	string url = 2;

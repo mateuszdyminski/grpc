@@ -1,4 +1,4 @@
-package com.grpc.util;
+package com.grpc.common;
 
 /**
  * Client type {Search, Watch, BiWatch}

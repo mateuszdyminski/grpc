@@ -1,25 +1,22 @@
-package com.grpc.search.client;
+package com.grpc.search.clients;
 
 import com.google.common.util.concurrent.Uninterruptibles;
 import com.grpc.search.GoogleGrpc;
 import com.grpc.search.Request;
 import com.grpc.search.Result;
-import com.grpc.util.Try;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import static com.grpc.util.Time.sleepUpToMiilis;
+import static com.grpc.common.Time.sleepUpToMiilis;
 import static java.lang.String.format;
 
 /**

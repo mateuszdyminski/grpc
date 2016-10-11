@@ -15,7 +15,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.grpc.util.Time.sleepUpToMiilis;
+import static com.grpc.common.Time.sleepUpToMiilis;
 import static java.lang.String.format;
 
 /**
@@ -78,7 +78,7 @@ public class Backend {
     /**
      * GoogleImpl implements abstract auto-generated class AbstractGoogle. You can find gRPC server logic here.
      */
-    private class GoogleImpl extends GoogleGrpc.AbstractGoogle {
+    private class GoogleImpl extends GoogleGrpc.GoogleImplBase {
 
         private final int id;
         private final Logger logger = Logger.getLogger(GoogleImpl.class.getName());

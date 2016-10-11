@@ -7,7 +7,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.7'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
     }
 }
 
@@ -18,16 +18,16 @@ repositories {
 }
 
 dependencies {
-    compile 'io.grpc:grpc-all:0.14.0'
+    compile 'io.grpc:grpc-all:1.0.1'
 }
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.0.0-beta-2"
+        artifact = "com.google.protobuf:protoc:3.1.0"
     }
     plugins {
         grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:0.14.0'
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.0.1'
         }
     }
     generateProtoTasks {
@@ -51,14 +51,22 @@ sourceSets {
 startScripts.enabled = false
 
 task searchClient(type: CreateStartScripts) {
-    mainClassName = "com.grpc.search.client.Starter"
-    applicationName = "google-client"
+    mainClassName = "com.grpc.search.clients.Starter"
+    applicationName = "grpc-google-client"
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = jar.outputs.files + project.configurations.runtime
+}
+
+task backend(type: CreateStartScripts) {
+    mainClassName = "com.grpc.search.backend.Backend"
+    applicationName = "grpc-google-backend"
     outputDir = new File(project.buildDir, 'tmp')
     classpath = jar.outputs.files + project.configurations.runtime
 }
 
 applicationDistribution.into("bin") {
     from(searchClient)
+    from(backend)
     fileMode = 0755
 }
 
