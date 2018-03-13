@@ -110,8 +110,8 @@ deleteUser(String name)
 
 * Generated code
 
-.code ../golang/search/search.pb.go /type GoogleClient/,/^}/
-.code ../golang/search/search.pb.go /type GoogleServer/,/^}/
+.code ../golang/search/search.pb.go /type SearchEngineClient/,/^}/
+.code ../golang/search/search.pb.go /type SearchEngineServer/,/^}/
 
 * Generated code
 

@@ -5,8 +5,8 @@ option java_outer_classname = "SearchProto";
 option objc_class_prefix = "GGL";
 package search;
 
-service Google {
-	// Search returns a Google search result for the query.
+service SearchEngine {
+	// Search returns a Search Engine result for the query.
 	rpc Search(Request) returns (Result) {}
 	// Watch returns a stream of Google search results for the query.
 	rpc Watch(Request) returns (stream Result) {}

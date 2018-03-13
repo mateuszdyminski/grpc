@@ -1,10 +1,10 @@
 package com.grpc.search.clients;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.grpc.search.GoogleGrpc;
 import com.grpc.search.Request;
 import com.grpc.search.Result;
 import com.grpc.common.Try;
+import com.grpc.search.SearchEngineGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
@@ -19,13 +19,13 @@ public class AsyncClient implements SearchClient {
 
     private static final Logger logger = Logger.getLogger(AsyncClient.class.getName());
     private final ManagedChannel channel;
-    private final GoogleGrpc.GoogleFutureStub googleFutureClient;
+    private final SearchEngineGrpc.SearchEngineFutureStub googleFutureClient;
 
     public AsyncClient(String host, int port) {
         channel = ManagedChannelBuilder.forAddress(host, port)
                 .usePlaintext(true)
                 .build();
-        googleFutureClient = GoogleGrpc.newFutureStub(channel);
+        googleFutureClient = SearchEngineGrpc.newFutureStub(channel);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class AsyncClient implements SearchClient {
     }
 
     /**
-     * Search searches query in async way in dummy google backend.
+     * Search searches query in async way in Search engine backend.
      */
     @Override
     public Result search(String query) {

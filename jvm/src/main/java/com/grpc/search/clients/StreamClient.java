@@ -1,9 +1,9 @@
 package com.grpc.search.clients;
 
 import com.google.common.util.concurrent.Uninterruptibles;
-import com.grpc.search.GoogleGrpc;
 import com.grpc.search.Request;
 import com.grpc.search.Result;
+import com.grpc.search.SearchEngineGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
@@ -27,14 +27,14 @@ public class StreamClient implements SearchClient {
     private static final Logger logger = Logger.getLogger(DeadlineClient.class.getName());
 
     private final ManagedChannel channel;
-    private final GoogleGrpc.GoogleStub googleStub;
+    private final SearchEngineGrpc.SearchEngineStub googleStub;
     private final SimpleDateFormat dt = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
 
     public StreamClient(String host, int port) {
         channel = ManagedChannelBuilder.forAddress(host, port)
                 .usePlaintext(true)
                 .build();
-        googleStub = GoogleGrpc.newStub(channel);
+        googleStub = SearchEngineGrpc.newStub(channel);
     }
 
     @Override

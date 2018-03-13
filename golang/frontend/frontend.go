@@ -7,9 +7,7 @@ import (
 	_ "net/http/pprof"
 	"strings"
 	"sync"
-
 	"net/http"
-
 	"fmt"
 	"io"
 
@@ -23,7 +21,7 @@ var (
 )
 
 type server struct {
-	backends []pb.GoogleClient
+	backends []pb.SearchEngineClient
 }
 
 // Search issues Search RPCs in parallel to the backends and returns
@@ -31,7 +29,7 @@ type server struct {
 func (s *server) Search(ctx context.Context, req *pb.Request) (*pb.Result, error) { // HL
 	c := make(chan result, len(s.backends))
 	for _, b := range s.backends {
-		go func(backend pb.GoogleClient) { // HL
+		go func(backend pb.SearchEngineClient) { // HL
 			res, err := backend.Search(ctx, req) // HL
 			c <- result{res, err}                // HL
 		}(b) // HL
@@ -47,13 +45,13 @@ type result struct {
 
 // Watch runs Watch RPCs in parallel on the backends and returns a
 // merged stream of results.
-func (s *server) Watch(req *pb.Request, stream pb.Google_WatchServer) error { // HL
+func (s *server) Watch(req *pb.Request, stream pb.SearchEngine_WatchServer) error { // HL
 	ctx := stream.Context()
 	c := make(chan result) // HL
 	var wg sync.WaitGroup
 	for _, b := range s.backends {
 		wg.Add(1)
-		go func(backend pb.GoogleClient) { // HL
+		go func(backend pb.SearchEngineClient) { // HL
 			defer wg.Done()                    // HL
 			watchBackend(ctx, backend, req, c) // HL
 		}(b) // HL
@@ -75,7 +73,7 @@ func (s *server) Watch(req *pb.Request, stream pb.Google_WatchServer) error { //
 
 // watchBackend runs Watch on a single backend and sends results on c.
 // watchBackend returns when ctx.Done is closed or stream.Recv fails.
-func watchBackend(ctx context.Context, backend pb.GoogleClient, req *pb.Request, c chan<- result) {
+func watchBackend(ctx context.Context, backend pb.SearchEngineClient, req *pb.Request, c chan<- result) {
 	stream, err := backend.Watch(ctx, req) // HL
 	if err != nil {
 		select {
@@ -99,7 +97,7 @@ func watchBackend(ctx context.Context, backend pb.GoogleClient, req *pb.Request,
 
 // BiWatch runs Watch RPCs in parallel on the backends and returns a
 // merged stream of results.
-func (s *server) BiWatch(stream pb.Google_BiWatchServer) error { // HL
+func (s *server) BiWatch(stream pb.SearchEngine_BiWatchServer) error { // HL
 	ctx := stream.Context()
 	c := make(chan result) // HL
 	searches := make([]chan pb.Request, 0)
@@ -128,7 +126,7 @@ func (s *server) BiWatch(stream pb.Google_BiWatchServer) error { // HL
 	var wg sync.WaitGroup
 	for i, b := range s.backends {
 		wg.Add(1)
-		go func(backend pb.GoogleClient, index int) { // HL
+		go func(backend pb.SearchEngineClient, index int) { // HL
 			defer wg.Done() // HL
 			fmt.Printf("Start watching to channel %d \n", &searches[i])
 			watchBiBackend(ctx, backend, searches[index], c) // HL
@@ -151,7 +149,7 @@ func (s *server) BiWatch(stream pb.Google_BiWatchServer) error { // HL
 
 // watchBiBackend runs Watch on a single backend and sends results on c.
 // watchBiBackend returns when ctx.Done is closed or stream.Recv fails.
-func watchBiBackend(ctx context.Context, backend pb.GoogleClient, searchFor chan pb.Request, c chan result) {
+func watchBiBackend(ctx context.Context, backend pb.SearchEngineClient, searchFor chan pb.Request, c chan result) {
 	fmt.Printf("Start watching from channel %d \n", &searchFor)
 	stream, err := backend.BiWatch(ctx) // HL
 	if err != nil {
@@ -198,6 +196,7 @@ func watchBiBackend(ctx context.Context, backend pb.GoogleClient, searchFor chan
 
 func main() {
 	flag.Parse()
+	grpc.EnableTracing = true
 	go http.ListenAndServe(":36660", nil)   // HTTP debugging
 	lis, err := net.Listen("tcp", ":36060") // RPC port
 	if err != nil {
@@ -209,10 +208,12 @@ func main() {
 		if err != nil {
 			log.Fatalf("fail to dial: %v", err)
 		}
-		client := pb.NewGoogleClient(conn)
+		client := pb.NewSearchEngineClient(conn)
 		s.backends = append(s.backends, client)
 	}
+
 	g := grpc.NewServer()
-	pb.RegisterGoogleServer(g, s)
+	pb.RegisterSearchEngineServer(g, s)
+	fmt.Println("Frontend started at port 36660")
 	g.Serve(lis)
 }

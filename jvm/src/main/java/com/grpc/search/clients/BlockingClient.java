@@ -1,9 +1,9 @@
 package com.grpc.search.clients;
 
-import com.grpc.search.GoogleGrpc;
 import com.grpc.search.Request;
 import com.grpc.search.Result;
 import com.grpc.common.Try;
+import com.grpc.search.SearchEngineGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
@@ -19,14 +19,14 @@ public class BlockingClient implements SearchClient {
     private static final Logger logger = Logger.getLogger(BlockingClient.class.getName());
 
     private final ManagedChannel channel;
-    private final GoogleGrpc.GoogleBlockingStub googleBlockingStub;
+    private final SearchEngineGrpc.SearchEngineBlockingStub googleBlockingStub;
 
     public BlockingClient(String host, int port) {
         channel = ManagedChannelBuilder.forAddress(host, port)
                 .usePlaintext(true)
                 .build();
 
-        googleBlockingStub = GoogleGrpc.newBlockingStub(channel);
+        googleBlockingStub = SearchEngineGrpc.newBlockingStub(channel);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class BlockingClient implements SearchClient {
     }
 
     /**
-     * Search query in dummy google backend.
+     * Search query in Search engine backend.
      */
     @Override
     public Result search(String query) {

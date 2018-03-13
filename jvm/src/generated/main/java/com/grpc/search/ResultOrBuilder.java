@@ -8,31 +8,31 @@ public interface ResultOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>optional string title = 1;</code>
+   * <code>string title = 1;</code>
    */
   java.lang.String getTitle();
   /**
-   * <code>optional string title = 1;</code>
+   * <code>string title = 1;</code>
    */
   com.google.protobuf.ByteString
       getTitleBytes();
 
   /**
-   * <code>optional string url = 2;</code>
+   * <code>string url = 2;</code>
    */
   java.lang.String getUrl();
   /**
-   * <code>optional string url = 2;</code>
+   * <code>string url = 2;</code>
    */
   com.google.protobuf.ByteString
       getUrlBytes();
 
   /**
-   * <code>optional string snippet = 3;</code>
+   * <code>string snippet = 3;</code>
    */
   java.lang.String getSnippet();
   /**
-   * <code>optional string snippet = 3;</code>
+   * <code>string snippet = 3;</code>
    */
   com.google.protobuf.ByteString
       getSnippetBytes();

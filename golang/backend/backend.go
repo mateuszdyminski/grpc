@@ -52,7 +52,7 @@ func logSleep(ctx context.Context, d time.Duration) {
 
 // Watch returns a stream of results identifying the query and this
 // backend, sleeping a random interval between each send.
-func (s *server) Watch(req *pb.Request, stream pb.Google_WatchServer) error { // HL
+func (s *server) Watch(req *pb.Request, stream pb.SearchEngine_WatchServer) error { // HL
 	ctx := stream.Context()
 	for i := 0; ; i++ {
 		d := randomDuration(1 * time.Second)
@@ -73,7 +73,7 @@ func (s *server) Watch(req *pb.Request, stream pb.Google_WatchServer) error { //
 
 // BiWatch returns a stream of results identifying the query and this
 // backend, sleeping a random interval between each send.
-func (s *server) BiWatch(stream pb.Google_BiWatchServer) error { // HL
+func (s *server) BiWatch(stream pb.SearchEngine_BiWatchServer) error { // HL
 	searchWords := make(chan string)
 	errs := make(chan error)
 	done := make(chan bool)
@@ -128,13 +128,16 @@ func (s *server) BiWatch(stream pb.Google_BiWatchServer) error { // HL
 
 func main() {
 	flag.Parse()
+	grpc.EnableTracing = true
 	rand.Seed(time.Now().UnixNano())
 	go http.ListenAndServe(fmt.Sprintf(":%d", 36661+*index), nil)   // HTTP debugging
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 36061+*index)) // RPC port // HL
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+
 	g := grpc.NewServer()                   // HL
-	pb.RegisterGoogleServer(g, new(server)) // HL
+	pb.RegisterSearchEngineServer(g, new(server)) // HL
+	fmt.Printf("Backend %d started at port %d", *index, 36661+*index)
 	g.Serve(lis)                            // HL
 }

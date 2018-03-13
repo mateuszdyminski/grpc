@@ -8,11 +8,11 @@ public interface RequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>optional string query = 1;</code>
+   * <code>string query = 1;</code>
    */
   java.lang.String getQuery();
   /**
-   * <code>optional string query = 1;</code>
+   * <code>string query = 1;</code>
    */
   com.google.protobuf.ByteString
       getQueryBytes();

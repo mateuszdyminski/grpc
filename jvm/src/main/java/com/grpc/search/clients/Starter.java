@@ -31,7 +31,7 @@ public class Starter {
     public static void main(String[] args) throws Exception {
         ClientType type = ClientType.SYNC;
         Method method = SEARCH;
-        String query = "jdd 2016";
+        String query = "code::dive";
 
         if (args.length > 0) {
             type = ClientType.fromString(args[0]).getUnchecked();

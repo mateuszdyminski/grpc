@@ -1,8 +1,8 @@
 package com.grpc.search.backend;
 
-import com.grpc.search.GoogleGrpc;
 import com.grpc.search.Request;
 import com.grpc.search.Result;
+import com.grpc.search.SearchEngineGrpc;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.ServerCallStreamObserver;
@@ -30,7 +30,7 @@ public class Backend {
 
     private void start(int id) throws IOException {
         server = ServerBuilder.forPort((port + id))
-                .addService(new GoogleImpl(id))
+                .addService(new SearchEngineImpl(id))
                 .build()
                 .start();
         logger.info("Server started, listening on " + (port + id));
@@ -76,14 +76,14 @@ public class Backend {
     }
 
     /**
-     * GoogleImpl implements abstract auto-generated class AbstractGoogle. You can find gRPC server logic here.
+     * SearchEngineImpl implements abstract auto-generated class AbstractSearchEngine. You can find gRPC server logic here.
      */
-    private class GoogleImpl extends GoogleGrpc.GoogleImplBase {
+    private class SearchEngineImpl extends SearchEngineGrpc.SearchEngineImplBase {
 
         private final int id;
-        private final Logger logger = Logger.getLogger(GoogleImpl.class.getName());
+        private final Logger logger = Logger.getLogger(SearchEngineImpl.class.getName());
 
-        public GoogleImpl(int id) {
+        public SearchEngineImpl(int id) {
             this.id = id;
         }
 

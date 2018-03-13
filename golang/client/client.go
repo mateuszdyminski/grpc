@@ -28,7 +28,7 @@ func main() {
 		log.Fatalf("fail to dial: %v", err)
 	}
 	defer conn.Close()
-	client := pb.NewGoogleClient(conn) // HL
+	client := pb.NewSearchEngineClient(conn) // HL
 
 	// Run the RPC.
 	switch *mode {
@@ -44,7 +44,7 @@ func main() {
 }
 
 // search issues a search for query and prints the result.
-func search(client pb.GoogleClient, query string) {
+func search(client pb.SearchEngineClient, query string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 80*time.Millisecond) // HL
 	defer cancel()
 	req := &pb.Request{Query: query}    // HL
@@ -56,7 +56,7 @@ func search(client pb.GoogleClient, query string) {
 }
 
 // watch runs a Watch RPC and prints the result stream.
-func watch(client pb.GoogleClient, query string) {
+func watch(client pb.SearchEngineClient, query string) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	req := &pb.Request{Query: query}      // HL
@@ -78,7 +78,7 @@ func watch(client pb.GoogleClient, query string) {
 }
 
 // watch runs a Watch RPC and prints the result stream.
-func biwatch(client pb.GoogleClient, query string) {
+func biwatch(client pb.SearchEngineClient, query string) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	stream, err := client.BiWatch(ctx) // HL
@@ -114,7 +114,7 @@ func biwatch(client pb.GoogleClient, query string) {
 	}
 }
 
-func send(stream pb.Google_BiWatchClient, query string) {
+func send(stream pb.SearchEngine_BiWatchClient, query string) {
 	if err := stream.Send(&pb.Request{Query: query + time.Now().Format("2006-01-02 15:04:05")}); err != nil {
 		log.Fatal(err)
 	}

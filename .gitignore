@@ -39,3 +39,5 @@ settings.gradle
 # Java 
 *.jar
 
+# OSX
+.DS_Store

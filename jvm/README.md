@@ -7,3 +7,8 @@
 ```
 gradle installDist -PskipCodegen=true
 ```
+
+#### Run :
+```
+gradle installDist -PskipCodegen=true
+```

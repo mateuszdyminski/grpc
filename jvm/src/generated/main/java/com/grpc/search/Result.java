@@ -10,6 +10,7 @@ public  final class Result extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:search.Result)
     ResultOrBuilder {
+private static final long serialVersionUID = 0L;
   // Use Result.newBuilder() to construct.
   private Result(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
@@ -23,7 +24,7 @@ public  final class Result extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    return this.unknownFields;
   }
   private Result(
       com.google.protobuf.CodedInputStream input,
@@ -31,6 +32,8 @@ public  final class Result extends
       throws com.google.protobuf.InvalidProtocolBufferException {
     this();
     int mutable_bitField0_ = 0;
+    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -40,7 +43,8 @@ public  final class Result extends
             done = true;
             break;
           default: {
-            if (!input.skipField(tag)) {
+            if (!parseUnknownFieldProto3(
+                input, unknownFields, extensionRegistry, tag)) {
               done = true;
             }
             break;
@@ -71,6 +75,7 @@ public  final class Result extends
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
+      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -89,7 +94,7 @@ public  final class Result extends
   public static final int TITLE_FIELD_NUMBER = 1;
   private volatile java.lang.Object title_;
   /**
-   * <code>optional string title = 1;</code>
+   * <code>string title = 1;</code>
    */
   public java.lang.String getTitle() {
     java.lang.Object ref = title_;
@@ -104,7 +109,7 @@ public  final class Result extends
     }
   }
   /**
-   * <code>optional string title = 1;</code>
+   * <code>string title = 1;</code>
    */
   public com.google.protobuf.ByteString
       getTitleBytes() {
@@ -123,7 +128,7 @@ public  final class Result extends
   public static final int URL_FIELD_NUMBER = 2;
   private volatile java.lang.Object url_;
   /**
-   * <code>optional string url = 2;</code>
+   * <code>string url = 2;</code>
    */
   public java.lang.String getUrl() {
     java.lang.Object ref = url_;
@@ -138,7 +143,7 @@ public  final class Result extends
     }
   }
   /**
-   * <code>optional string url = 2;</code>
+   * <code>string url = 2;</code>
    */
   public com.google.protobuf.ByteString
       getUrlBytes() {
@@ -157,7 +162,7 @@ public  final class Result extends
   public static final int SNIPPET_FIELD_NUMBER = 3;
   private volatile java.lang.Object snippet_;
   /**
-   * <code>optional string snippet = 3;</code>
+   * <code>string snippet = 3;</code>
    */
   public java.lang.String getSnippet() {
     java.lang.Object ref = snippet_;
@@ -172,7 +177,7 @@ public  final class Result extends
     }
   }
   /**
-   * <code>optional string snippet = 3;</code>
+   * <code>string snippet = 3;</code>
    */
   public com.google.protobuf.ByteString
       getSnippetBytes() {
@@ -209,6 +214,7 @@ public  final class Result extends
     if (!getSnippetBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, snippet_);
     }
+    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -225,11 +231,11 @@ public  final class Result extends
     if (!getSnippetBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, snippet_);
     }
+    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
 
-  private static final long serialVersionUID = 0L;
   @java.lang.Override
   public boolean equals(final java.lang.Object obj) {
     if (obj == this) {
@@ -247,6 +253,7 @@ public  final class Result extends
         .equals(other.getUrl());
     result = result && getSnippet()
         .equals(other.getSnippet());
+    result = result && unknownFields.equals(other.unknownFields);
     return result;
   }
 
@@ -256,7 +263,7 @@ public  final class Result extends
       return memoizedHashCode;
     }
     int hash = 41;
-    hash = (19 * hash) + getDescriptorForType().hashCode();
+    hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + TITLE_FIELD_NUMBER;
     hash = (53 * hash) + getTitle().hashCode();
     hash = (37 * hash) + URL_FIELD_NUMBER;
@@ -268,6 +275,17 @@ public  final class Result extends
     return hash;
   }
 
+  public static com.grpc.search.Result parseFrom(
+      java.nio.ByteBuffer data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static com.grpc.search.Result parseFrom(
+      java.nio.ByteBuffer data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
   public static com.grpc.search.Result parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -421,7 +439,7 @@ public  final class Result extends
     }
     public Builder setField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
-        Object value) {
+        java.lang.Object value) {
       return (Builder) super.setField(field, value);
     }
     public Builder clearField(
@@ -434,12 +452,12 @@ public  final class Result extends
     }
     public Builder setRepeatedField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
-        int index, Object value) {
+        int index, java.lang.Object value) {
       return (Builder) super.setRepeatedField(field, index, value);
     }
     public Builder addRepeatedField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
-        Object value) {
+        java.lang.Object value) {
       return (Builder) super.addRepeatedField(field, value);
     }
     public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -465,6 +483,7 @@ public  final class Result extends
         snippet_ = other.snippet_;
         onChanged();
       }
+      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -493,7 +512,7 @@ public  final class Result extends
 
     private java.lang.Object title_ = "";
     /**
-     * <code>optional string title = 1;</code>
+     * <code>string title = 1;</code>
      */
     public java.lang.String getTitle() {
       java.lang.Object ref = title_;
@@ -508,7 +527,7 @@ public  final class Result extends
       }
     }
     /**
-     * <code>optional string title = 1;</code>
+     * <code>string title = 1;</code>
      */
     public com.google.protobuf.ByteString
         getTitleBytes() {
@@ -524,7 +543,7 @@ public  final class Result extends
       }
     }
     /**
-     * <code>optional string title = 1;</code>
+     * <code>string title = 1;</code>
      */
     public Builder setTitle(
         java.lang.String value) {
@@ -537,7 +556,7 @@ public  final class Result extends
       return this;
     }
     /**
-     * <code>optional string title = 1;</code>
+     * <code>string title = 1;</code>
      */
     public Builder clearTitle() {
       
@@ -546,7 +565,7 @@ public  final class Result extends
       return this;
     }
     /**
-     * <code>optional string title = 1;</code>
+     * <code>string title = 1;</code>
      */
     public Builder setTitleBytes(
         com.google.protobuf.ByteString value) {
@@ -562,7 +581,7 @@ public  final class Result extends
 
     private java.lang.Object url_ = "";
     /**
-     * <code>optional string url = 2;</code>
+     * <code>string url = 2;</code>
      */
     public java.lang.String getUrl() {
       java.lang.Object ref = url_;
@@ -577,7 +596,7 @@ public  final class Result extends
       }
     }
     /**
-     * <code>optional string url = 2;</code>
+     * <code>string url = 2;</code>
      */
     public com.google.protobuf.ByteString
         getUrlBytes() {
@@ -593,7 +612,7 @@ public  final class Result extends
       }
     }
     /**
-     * <code>optional string url = 2;</code>
+     * <code>string url = 2;</code>
      */
     public Builder setUrl(
         java.lang.String value) {
@@ -606,7 +625,7 @@ public  final class Result extends
       return this;
     }
     /**
-     * <code>optional string url = 2;</code>
+     * <code>string url = 2;</code>
      */
     public Builder clearUrl() {
       
@@ -615,7 +634,7 @@ public  final class Result extends
       return this;
     }
     /**
-     * <code>optional string url = 2;</code>
+     * <code>string url = 2;</code>
      */
     public Builder setUrlBytes(
         com.google.protobuf.ByteString value) {
@@ -631,7 +650,7 @@ public  final class Result extends
 
     private java.lang.Object snippet_ = "";
     /**
-     * <code>optional string snippet = 3;</code>
+     * <code>string snippet = 3;</code>
      */
     public java.lang.String getSnippet() {
       java.lang.Object ref = snippet_;
@@ -646,7 +665,7 @@ public  final class Result extends
       }
     }
     /**
-     * <code>optional string snippet = 3;</code>
+     * <code>string snippet = 3;</code>
      */
     public com.google.protobuf.ByteString
         getSnippetBytes() {
@@ -662,7 +681,7 @@ public  final class Result extends
       }
     }
     /**
-     * <code>optional string snippet = 3;</code>
+     * <code>string snippet = 3;</code>
      */
     public Builder setSnippet(
         java.lang.String value) {
@@ -675,7 +694,7 @@ public  final class Result extends
       return this;
     }
     /**
-     * <code>optional string snippet = 3;</code>
+     * <code>string snippet = 3;</code>
      */
     public Builder clearSnippet() {
       
@@ -684,7 +703,7 @@ public  final class Result extends
       return this;
     }
     /**
-     * <code>optional string snippet = 3;</code>
+     * <code>string snippet = 3;</code>
      */
     public Builder setSnippetBytes(
         com.google.protobuf.ByteString value) {
@@ -699,12 +718,12 @@ public  final class Result extends
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.setUnknownFieldsProto3(unknownFields);
     }
 
     public final Builder mergeUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return this;
+      return super.mergeUnknownFields(unknownFields);
     }
 
 

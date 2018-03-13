@@ -1,10 +1,10 @@
 package com.grpc.search.clients;
 
 import com.google.common.util.concurrent.Uninterruptibles;
-import com.grpc.search.GoogleGrpc;
 import com.grpc.search.Request;
 import com.grpc.search.Result;
 import com.grpc.common.Try;
+import com.grpc.search.SearchEngineGrpc;
 import io.grpc.*;
 import io.grpc.internal.GrpcUtil;
 
@@ -23,13 +23,13 @@ public class DeadlineClient implements SearchClient {
     private static final Logger logger = Logger.getLogger(DeadlineClient.class.getName());
 
     private final ManagedChannel channel;
-    private final GoogleGrpc.GoogleBlockingStub googleBlockingStub;
+    private final SearchEngineGrpc.SearchEngineBlockingStub googleBlockingStub;
 
     public DeadlineClient(String host, int port) {
         channel = ManagedChannelBuilder.forAddress(host, port)
                 .usePlaintext(true)
                 .build();
-        googleBlockingStub = GoogleGrpc.newBlockingStub(channel).withDeadlineAfter(700, TimeUnit.MILLISECONDS);
+        googleBlockingStub = SearchEngineGrpc.newBlockingStub(channel).withDeadlineAfter(500, TimeUnit.MILLISECONDS);
     }
 
     public void shutdown() throws InterruptedException {
@@ -39,7 +39,8 @@ public class DeadlineClient implements SearchClient {
     /**
      * Search query with deadline (provided at stub construction) in dummy google backend.
      */
-    public Result searchSimple(String query) {
+    @Override
+    public Result search(String query) {
         logger.info("Starting search for " + query + "...");
 
         final Request request = Request.newBuilder().setQuery(query).build();
@@ -54,10 +55,9 @@ public class DeadlineClient implements SearchClient {
     /**
      * Search query with deadline (set manually during request creation) in dummy google backend.
      */
-    @Override
-    public Result search(String query) {
+    public Result searchSimple(String query) {
         final ClientCall<Request, Result> call =
-                channel.newCall(GoogleGrpc.METHOD_SEARCH, CallOptions.DEFAULT.withDeadlineAfter(800, TimeUnit.MILLISECONDS));
+                channel.newCall(SearchEngineGrpc.METHOD_SEARCH, CallOptions.DEFAULT.withDeadlineAfter(800, TimeUnit.MILLISECONDS));
 
         final CountDownLatch latch = new CountDownLatch(1);
         final List<Result> results = new ArrayList<>();

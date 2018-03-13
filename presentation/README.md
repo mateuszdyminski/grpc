@@ -1,4 +1,11 @@
-### gRPC Presentation
+## gRPC Presentations
+
+There are 2 version of this presentation
+
+- old - based on Go present tool - see below
+- new - based on PowerPoint - [see](new/grpc-code-dive.pptx)
+
+### Old
 
 #### Requirements
 

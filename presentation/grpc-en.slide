@@ -1,10 +1,28 @@
 Take your microservices to the next level with gRPC
 
 *Mateusz* *Dymiński*
-*Siili* *Solutions*
+*Nokia*
 
-@m_dyminski
-github.com/mateuszdyminski/grpc
+* Whoami
+
+Mateusz Dymiński:
+
+- Software Developer at Nokia
+- 7+ exp with Java
+- 3+ exp with Go
+- One of the organizer [[https://www.meetup.com/GoWroc][GoWroc - Golang Wroclaw Meetup]]
+- Github: [[http://github.com/mateuszdyminski][github.com/mateuszdyminski]]
+- Twitter: [[http://twitter.com/m_dyminski][@m_dyminski]]
+- LinkedIn: [[http://linkedin.com/in/mdyminski][linkedin.com/in/mdyminski]]
+
+* Agenda
+
+- What's gRPC
+- Problems in the World of Microservices
+- How gRPC solves them
+- Demo
+- Summary
+- Q&A
 
 * gRPC ia a new RPC framework created by Google
 
@@ -41,7 +59,7 @@ Examples:
 
 * gRPC users
 
-900+ imports - [[https://godoc.org/google.golang.org/grpc?importers][google.golang.org/grpc]] on [[http://godoc.org][godoc.org]]
+4500+ imports - [[https://godoc.org/google.golang.org/grpc?importers][google.golang.org/grpc]] on [[http://godoc.org][godoc.org]]
 
 Go:
 - [[github.com/docker/docker/libcontainerd][Docker]]
@@ -154,7 +172,8 @@ _Source_https://talks.golang.org/2015/gotham-grpc_
 
 * Frontend calls Search on backends and waits for first arrived result.
 
-.image grpc/search.svg _ 900
+.image grpc/search.svg _ 800
+_Source_https://talks.golang.org/2015/gotham-grpc_
 
 * Demo! - Google search
 
@@ -181,10 +200,12 @@ _Source_https://talks.golang.org/2015/gotham-grpc_
 - Java
 
 	Requirements:
-		- Gradle
-		- protobuf-gradle-plugin
+		- Gradle/Maven
+		- protobuf-gradle-plugin/protobuf-maven-plugin
 
 	gradle generateProto
+  /
+  mvn protobuf:compile
 
 * Generated code - Golang
 
